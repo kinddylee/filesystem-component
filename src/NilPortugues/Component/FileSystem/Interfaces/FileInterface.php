@@ -5,25 +5,33 @@ interface FileInterface
 {
     public function getExtension($filePath);
 
-    public function getFileModificationDate($filePath);
+    public function getModificationDate($filePath);
 
-    public function fileExists($filePath);
+    public function exists($filePath);
 
-    public function fileIsReadable($filePath);
+    public function isReadable($filePath);
 
-    public function fileGetContents($filePath);
+    public function isWritable($filePath);
 
-    public function filePutContents($filePath, $data, $mode = null);
+    public function read($filePath);
 
-    public function fileAppend($filePath, $data);
+    public function write($filePath, $data, $mode = null);
 
-    public function fileChmod($filePath, $mode);
+    public function append($filePath, $data);
 
-    public function fileDelete($filePath);
+    public function chmod($filePath, $mode);
 
-    //public function fileIsWriteable($filePath);
+    public function delete($filePath);
 
-    public function fileRename($filePath,$newFileName,$overwrite=false);
+    public function rename($filePath,$newFileName,$overwrite=false);
 
-    public function fileTouch($filePath,$time='',$accessTime='');
+    public function touch($filePath,$time='',$accessTime='');
+
+    public function gzip($filePath, $newFileName, $overwrite=false, $param="1");
+
+    public function gunzip ($filePath, $newFileName,$overwrite=false);
+
+    public function zip($filePath, $newFileName, $overwrite=false);
+
+    public function unzip($filePath, $newFileName, $overwrite=false);
 }

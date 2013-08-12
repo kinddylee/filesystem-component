@@ -3,7 +3,7 @@ namespace NilPortugues\Component\FileSystem;
 
 use NilPortugues\Component\FileSystem\Exceptions\FileException;
 
-class File implements \NilPortugues\Component\FileSystem\Interfaces\FileInterface
+class File extends Zip implements \NilPortugues\Component\FileSystem\Interfaces\FileInterface
 {
     /**
      * @param $filePath
@@ -11,7 +11,7 @@ class File implements \NilPortugues\Component\FileSystem\Interfaces\FileInterfac
      */
     public function getExtension($filePath)
     {
-        if ($this->fileExists($filePath)) {
+        if ($this->exists($filePath)) {
             $ext = pathinfo($filePath, PATHINFO_EXTENSION);
 
             return strtolower($ext);
@@ -24,12 +24,12 @@ class File implements \NilPortugues\Component\FileSystem\Interfaces\FileInterfac
      * Gets last modification time of the file.
      *
      * @param  string $filename
-     * @return int
+     * @return bool|int
      */
-    public function getFileModificationDate($filePath)
+    public function getModificationDate($filePath)
     {
         clearstatcache();
-        if ($this->fileExists($filePath)) {
+        if ($this->exists($filePath)) {
             return filemtime($filePath);
         }
 
@@ -43,14 +43,14 @@ class File implements \NilPortugues\Component\FileSystem\Interfaces\FileInterfac
      * @return bool
      * @throws Exceptions\FileException
      */
-    public function fileTouch($filePath,$time='',$accessTime='')
+    public function touch($filePath,$time='',$accessTime='')
     {
         clearstatcache();
-        if (!$this->fileExists($filePath)) {
+        if (!$this->exists($filePath)) {
             throw new FileException("File {$filePath} does not exists.");
         }
 
-        if (!$this->fileIsWritable($filePath)) {
+        if (!$this->isWritable($filePath)) {
             throw new FileException("File {$filePath} is not writable.");
         }
 
@@ -71,10 +71,10 @@ class File implements \NilPortugues\Component\FileSystem\Interfaces\FileInterfac
     /**
      * Determine if the file exists.
      *
-     * @param  string  $filename Filename with optional path
-     * @return boolean
+     * @param $filePath
+     * @return bool
      */
-    public function fileExists($filePath)
+    public function exists($filePath)
     {
         clearstatcache();
 
@@ -88,9 +88,9 @@ class File implements \NilPortugues\Component\FileSystem\Interfaces\FileInterfac
      * @return bool
      * @throws Exceptions\FileException
      */
-    public function fileIsReadable($filePath)
+    public function isReadable($filePath)
     {
-        if (!$this->fileExists($filePath)) {
+        if (!$this->exists($filePath)) {
             throw new FileException("File {$filePath} does not exists.");
         }
 
@@ -98,13 +98,13 @@ class File implements \NilPortugues\Component\FileSystem\Interfaces\FileInterfac
     }
 
     /**
-     * @param  string                   $filePath Filename with optional path
+     * @param $filePath
      * @return bool
      * @throws Exceptions\FileException
      */
-    public function fileIsWritable($filePath)
+    public function isWritable($filePath)
     {
-        if (!$this->fileExists($filePath)) {
+        if (!$this->exists($filePath)) {
             throw new FileException("File {$filePath} does not exists.");
         }
 
@@ -118,13 +118,13 @@ class File implements \NilPortugues\Component\FileSystem\Interfaces\FileInterfac
      * @return string
      * @throws Exceptions\FileException
      */
-    public function fileGetContents($filePath)
+    public function read($filePath)
     {
-        if (!$this->fileExists($filePath)) {
+        if (!$this->exists($filePath)) {
             throw new FileException("File {$filePath} does not exist.");
         }
 
-        if ( $this->fileIsReadable($filePath) ) {
+        if ( $this->isReadable($filePath) ) {
             return file_get_contents($filePath);
         } else {
             throw new FileException("File {$filePath} is not readable.");
@@ -139,16 +139,17 @@ class File implements \NilPortugues\Component\FileSystem\Interfaces\FileInterfac
      * @param  string $data
      * @param  string $mode
      * @return int    The number of bytes (not chars!) that were written to the file, or FALSE on failure.
+     * @throws Exceptions\FileException
      */
-    public function filePutContents($filePath, $data, $mode = null)
+    public function write($filePath, $data, $mode = null)
     {
-        if (!$this->fileIsWritable($filePath) || !is_file($filePath)) {
+        if (!$this->isWritable($filePath) || !is_file($filePath)) {
             throw new FileException("File {$filePath} is not writable.");
         }
 
         $chmod = !is_null($mode) && !is_file($filePath);
         $res = file_put_contents($filePath, $data, LOCK_EX);
-        $chmod && $this->fileChmod($filePath, $mode);
+        $chmod && $this->chmod($filePath, $mode);
 
         return $res;
     }
@@ -159,10 +160,11 @@ class File implements \NilPortugues\Component\FileSystem\Interfaces\FileInterfac
      * @param  string  $filePath
      * @param  string  $data
      * @return integer The number of bytes that were written to the file, or FALSE on failure.
+     * @throws Exceptions\FileException
      */
-    public function fileAppend($filePath, $data)
+    public function append($filePath, $data)
     {
-        if (!$this->fileIsWritable($filePath) || !is_file($filePath)) {
+        if (!$this->isWritable($filePath) || !is_file($filePath)) {
             throw new FileException("File {$filePath} is not writable.");
         }
 
@@ -175,10 +177,11 @@ class File implements \NilPortugues\Component\FileSystem\Interfaces\FileInterfac
      * @param  string  $filePath
      * @param  string  $mode
      * @return boolean TRUE on success or FALSE on failure.
+     * @throws Exceptions\FileException
      */
-    public function fileChmod($filePath, $mode)
+    public function chmod($filePath, $mode)
     {
-        if (!$this->fileExists($filePath)) {
+        if (!$this->exists($filePath)) {
             throw new FileException("File {$filePath} does not exist.");
         }
 
@@ -192,9 +195,9 @@ class File implements \NilPortugues\Component\FileSystem\Interfaces\FileInterfac
      * @return bool
      * @throws Exceptions\FileException
      */
-    public function fileDelete($filePath)
+    public function delete($filePath)
     {
-        if ( $this->fileExists($filePath) ) {
+        if ( $this->exists($filePath) ) {
             return unlink($filePath);
         } else {
             throw new FileException("File {$filePath} does not exist.");
@@ -210,9 +213,9 @@ class File implements \NilPortugues\Component\FileSystem\Interfaces\FileInterfac
      * @return bool
      * @throws Exceptions\FileException
      */
-    public function fileRename($filePath,$newFileName,$overwrite=false)
+    public function rename($filePath,$newFileName,$overwrite=false)
     {
-        if (!$this->fileExists($filePath)) {
+        if (!$this->exists($filePath)) {
             throw new FileException("File {$filePath} does not exist.");
         }
 
@@ -223,10 +226,89 @@ class File implements \NilPortugues\Component\FileSystem\Interfaces\FileInterfac
         $pathWithoutFileName = pathinfo($filePath,PATHINFO_DIRNAME);
         $newFilePath = $pathWithoutFileName.DIRECTORY_SEPARATOR.$newFileName;
 
-        if ( $overwrite==false && $this->fileExists($newFilePath) ) {
+        if ( $overwrite==false && $this->exists($newFilePath) ) {
             throw new FileException("Cannot rename file {$filePath} to {$newFileName}. A file with he same name already exists at {$pathWithoutFileName}.");
         }
 
         return rename( $filePath, $newFilePath );
+    }
+
+
+    /**
+     * Compress a file with the zlib-extension.
+     *
+     * @param string $filePath
+     * @param string $newFileName
+     * @param bool $overwrite
+     * @param string $param
+     * @return bool
+     * @throws Exceptions\FileException
+     */
+    public function gzip($filePath, $newFileName, $overwrite=false, $param="1")
+    {
+        if (!$this->exists($filePath)) {
+            throw new FileException("File {$filePath} does not exist.");
+        }
+
+        if ($overwrite==false && $this->exists($newFileName)) {
+            throw new FileException("File {$newFileName} cannot be created because it already exists.");
+        }
+
+        if (!$this->isWritable($newFileName)) {
+            throw new FileException("Cannot write {$newFileName} in the file system.");
+        }
+
+        $in_file = fopen ($filePath, "rb");
+        if (!$out_file = gzopen ($newFileName, "wb".$param)) {
+            return false;
+        }
+
+        while (!feof ($in_file)) {
+            $buffer = fgets ($in_file, 4096);
+            gzwrite ($out_file, $buffer, 4096);
+        }
+
+        fclose ($in_file);
+        gzclose ($out_file);
+
+        return true;
+    }
+
+    /**
+     * Uncompress a file with the zlib-extension.
+     *
+     * @param $filePath
+     * @param $newFileName
+     * @param bool $overwrite
+     * @return bool
+     * @throws Exceptions\FileException
+     */
+    public function gunzip($filePath,$newFileName,$overwrite=false)
+    {
+        if (!$this->exists($filePath)) {
+            throw new FileException("File {$filePath} does not exist.");
+        }
+
+        if ($overwrite==false && $this->exists($newFileName)) {
+            throw new FileException("File {$newFileName} cannot be created because it already exists.");
+        }
+
+        if (!$this->isWritable($newFileName)) {
+            throw new FileException("Cannot write {$newFileName} in the file system.");
+        }
+
+        $in_file = gzopen ($filePath, "rb");
+        $out_file = fopen ($newFileName, "wb");
+
+        while (!gzeof ($in_file))
+        {
+            $buffer = gzread ($in_file, 4096);
+            fwrite ($out_file, $buffer, 4096);
+        }
+
+        gzclose ($in_file);
+        fclose ($out_file);
+
+        return true;
     }
 }

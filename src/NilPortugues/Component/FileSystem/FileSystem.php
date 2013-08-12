@@ -1,26 +1,10 @@
 <?php
 namespace NilPortugues\Component\FileSystem;
 
-use \NilPortugues\Component\FileSystem\Interfaces\ZipInterface as ZipArchive;
 use NilPortugues\Component\FileSystem\Exceptions\FileException;
 
-class FileSystem extends File implements ZipArchive
+class FileSystem
 {
-    /**
-     * Read chunk size
-     *
-     * We'll read this number of bytes from the source file at a time,
-     * and write that to the gzip file.
-     *
-     * @var int
-     */
-    const READ_SIZE = 16384; // 16 KB chunks
-
-    public function __construct()
-    {
-
-    }
-
     /**
      * Checks if the path is an absolute path.
      *
@@ -99,7 +83,7 @@ class FileSystem extends File implements ZipArchive
         }
 
         while (! feof($fh)) {
-            $data = fread($fh, static::READ_SIZE);
+            $data = fread($fh, 16384);
             if (false === $data) {
                 throw new FileException("File {$sSourceFile} could not be read.");
             }

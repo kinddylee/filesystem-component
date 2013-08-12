@@ -36,18 +36,18 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($result);
     }
 
-    public function testGetFileModificationDateExistingFile()
+    public function testGetModificationDateExistingFile()
     {
         $file = $this->filename;
-        $result = $this->file->getFileModificationDate($file);
+        $result = $this->file->getModificationDate($file);
 
         $this->assertNotEmpty($result);
     }
 
-    public function testGetFileModificationDateNonExistentFile()
+    public function testGetModificationDateNonExistentFile()
     {
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
-        $result = $this->file->getFileModificationDate($file);
+        $result = $this->file->getModificationDate($file);
 
         $this->assertFalse($result);
     }
@@ -55,11 +55,11 @@ class FileTest extends \PHPUnit_Framework_TestCase
     public function testChangeModificationDateExistingFile()
     {
         $file = $this->filename;
-        $original = $this->file->getFileModificationDate($file);
+        $original = $this->file->getModificationDate($file);
 
         $time = time()-3600;
-        $this->file->fileTouch($file,$time);
-        $result = $this->file->getFileModificationDate($file);
+        $this->file->touch($file,$time);
+        $result = $this->file->getModificationDate($file);
 
         $this->assertEquals($original-3600,$result);
     }
@@ -68,68 +68,68 @@ class FileTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileException');
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
-        $this->file->fileTouch($file,time());
+        $this->file->touch($file,time());
     }
 
     public function testFileExistsExistingFile()
     {
         $file = $this->filename;
-        $this->assertTrue($this->file->fileExists($file));
+        $this->assertTrue($this->file->exists($file));
     }
 
     public function testFileExistsNonExistentFile()
     {
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
-        $this->assertFalse($this->file->fileExists($file));
+        $this->assertFalse($this->file->exists($file));
     }
 
     public function testFileIsReadableExistingFile()
     {
         $file = $this->filename;
-        $this->assertTrue($this->file->fileIsWritable($file));
+        $this->assertTrue($this->file->isWritable($file));
     }
 
     public function testFileIsReadableNonExistentFile()
     {
         $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileException');
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
-        $this->file->fileIsWritable($file);
+        $this->file->isWritable($file);
     }
 
-    public function testFileGetContentsExistingFile()
+    public function testFileReadExistingFile()
     {
         $file = $this->filename;
-        $this->assertNotEmpty($this->file->fileGetContents($file));
+        $this->assertNotEmpty($this->file->read($file));
     }
 
-    public function testFileGetContentsNonExistentFile()
+    public function testFileReadNonExistentFile()
     {
         $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileException');
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
-        $this->file->fileGetContents($file);
+        $this->file->read($file);
     }
 
-    public function testFilePutContentsFileIsWritable()
+    public function testFileWriteFileIsWritable()
     {
         $file = $this->filename;
         $data = 'Lorem ipsum blah blah blah';
 
-        $this->assertNotEquals($this->file->filePutContents($file, $data, '0755'),false);
+        $this->assertNotEquals($this->file->write($file, $data, '0755'),false);
     }
 
-    public function testFilePutContentsFileNotWritable()
+    public function testFileWriteFileNotWritable()
     {
         $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileException');
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
         $data = 'Lorem ipsum blah blah blah';
 
-        $this->file->filePutContents($file, $data, '0755');
+        $this->file->write($file, $data, '0755');
     }
 
     public function testFileAppendExistingFile()
     {
         $file = $this->filename;
-        $this->assertNotEquals($this->file->fileAppend($file, 'new data'),false);
+        $this->assertNotEquals($this->file->append($file, 'new data'),false);
     }
 
     public function testFileAppendNonExistentFile()
@@ -137,7 +137,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileException');
 
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
-        $this->file->fileAppend($file, 'new data');
+        $this->file->append($file, 'new data');
     }
 
     public function testFileChmodNonExistentFile()
@@ -145,13 +145,13 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileException');
 
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
-        $this->file->fileChmod($file, '0755');
+        $this->file->chmod($file, '0755');
     }
 
     public function testFileChmodExistingFile()
     {
         $file = $this->filename;
-        $this->assertTrue($this->file->fileChmod($file, '0755'));
+        $this->assertTrue($this->file->chmod($file, '0755'));
     }
 
     public function testFileDeleteNonExistentFile()
@@ -159,13 +159,13 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileException');
 
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
-        $this->file->fileDelete($file);
+        $this->file->delete($file);
     }
 
     public function testFileDeleteExistingFile()
     {
         file_put_contents('temp.txt','');
-        $this->assertTrue($this->file->fileDelete( 'temp.txt' ));
+        $this->assertTrue($this->file->delete( 'temp.txt' ));
     }
 
     public function testFileRenameInvalidNewFilename()
@@ -174,7 +174,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $overwrite=false;
 
         $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileException');
-        $this->file->fileRename($file,'ok/a.txt',$overwrite);
+        $this->file->rename($file,'ok/a.txt',$overwrite);
     }
 
     public function testFileRenameNonExistentFile()
@@ -182,37 +182,78 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileException');
 
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
-        $this->file->fileRename($file,'newName.txt',false);
+        $this->file->rename($file,'newName.txt',false);
     }
 
     public function testFileRenameExistingFileNoOverwrite()
     {
         $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileException');
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
-        $this->file->fileRename($file,'newName.txt',false);
+        $this->file->rename($file,'newName.txt',false);
     }
 
     public function testFileRenameExistingFileWithOverwrite()
     {
         file_put_contents('./temp.txt','');
         file_put_contents('./temp2.txt','');
-        $this->file->fileRename('./temp.txt','temp2.txt',true);
+        $this->file->rename('./temp.txt','temp2.txt',true);
 
-        $this->assertFalse($this->file->fileExists('./temp.txt'));
-        $this->assertTrue($this->file->fileExists('./temp2.txt'));
+        $this->assertFalse($this->file->exists('./temp.txt'));
+        $this->assertTrue($this->file->exists('./temp2.txt'));
 
-        $this->file->fileDelete('./temp2.txt');
-        $this->assertFalse($this->file->fileExists('./temp2.txt'));
+        $this->file->delete('./temp2.txt');
+        $this->assertFalse($this->file->exists('./temp2.txt'));
     }
 
     public function testFileRenameExistingFileSameName()
     {
         file_put_contents('./temp.txt','');
-        $this->file->fileRename('./temp.txt','temp.txt',true);
+        $this->file->rename('./temp.txt','temp.txt',true);
 
-        $this->assertTrue($this->file->fileExists('./temp.txt'));
-        $this->file->fileDelete('./temp.txt');
-        $this->assertFalse($this->file->fileExists('./temp.txt'));
+        $this->assertTrue($this->file->exists('./temp.txt'));
+        $this->file->delete('./temp.txt');
+        $this->assertFalse($this->file->exists('./temp.txt'));
+    }
+
+    public function testGZipExistingFile()
+    {
+
+    }
+
+    public function testGZipNonExistentFile()
+    {
+
+    }
+
+    public function testGunzipExistingFile()
+    {
+
+    }
+
+    public function testGunzipNonExistentFile()
+    {
+
+    }
+
+
+    public function testZipExistingFile()
+    {
+
+    }
+
+    public function testZipNonExistentFile()
+    {
+
+    }
+
+    public function testUnzipExistingFile()
+    {
+
+    }
+
+    public function testUnzipNonExistentFile()
+    {
+
     }
 
     public function tearDown()
