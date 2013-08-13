@@ -254,7 +254,7 @@ class File extends Zip implements \NilPortugues\Component\FileSystem\Interfaces\
             throw new FileException("File {$newFileName} cannot be created because it already exists.");
         }
 
-        if (!$this->isWritable($newFileName)) {
+        if ( !is_writable(dirname($newFileName)) ) {
             throw new FileException("Cannot write {$newFileName} in the file system.");
         }
 
@@ -293,22 +293,20 @@ class File extends Zip implements \NilPortugues\Component\FileSystem\Interfaces\
             throw new FileException("File {$newFileName} cannot be created because it already exists.");
         }
 
-        if (!$this->isWritable($newFileName)) {
+        if ( !is_writable(dirname($newFileName)) ) {
             throw new FileException("Cannot write {$newFileName} in the file system.");
         }
 
         $in_file = gzopen ($filePath, "rb");
         $out_file = fopen ($newFileName, "wb");
 
-        while (!gzeof ($in_file))
+        while (!gzeof($in_file))
         {
-            $buffer = gzread ($in_file, 4096);
-            fwrite ($out_file, $buffer, 4096);
+            fwrite($out_file, gzread($in_file, 4096));
         }
 
-        gzclose ($in_file);
-        fclose ($out_file);
-
+        gzclose($in_file);
+        fclose($out_file);
         return true;
     }
 }

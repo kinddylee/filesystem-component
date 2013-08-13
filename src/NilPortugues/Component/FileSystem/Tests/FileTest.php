@@ -217,48 +217,156 @@ class FileTest extends \PHPUnit_Framework_TestCase
 
     public function testGZipExistingFile()
     {
+        $file = $this->filename;
 
+        $this->file->gzip($file,$file.'.gz',true);
+
+        $result = $this->file->exists($file.'.gz');
+        $this->assertTrue( $result );
+
+        if($result)
+        {
+            $this->file->delete($file.'.gz');
+        }
     }
 
     public function testGZipNonExistentFile()
     {
-
+        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileException');
+        $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
+        $this->file->gzip($file,$file.'.gz',true);
     }
 
     public function testGunzipExistingFile()
     {
+        $file = $this->filename;
+        $this->file->gzip($file,$file.'.gz',true);
+        $this->file->gunzip($file.'.gz',$file.'.extracted.txt',true);
 
+        $result = $this->file->gunzip($file.'.gz',$file.'.extracted.txt',true);
+        $this->assertTrue( $result );
+        if($result)
+        {
+            $this->file->delete($file.'.gz');
+            $this->file->delete($file.'.extracted.txt');
+        }
     }
 
     public function testGunzipNonExistentFile()
     {
+        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileException');
+        $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
 
+        $this->file->gunzip($file.'.gz',$file.'.extracted.txt',true);
     }
 
 
     public function testZipExistingFile()
     {
+        file_put_contents('test.txt','');
+        $file = 'test.txt';
+        $result = $this->file->zip($file,$file.'.zip',true);
 
+        $this->assertTrue( $result );
+        if($result)
+        {
+           $this->file->delete($file.'.zip');
+        }
     }
 
     public function testZipNonExistentFile()
     {
+        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\ZipException');
+        $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
+        $this->file->zip($file,$file.'.zip',true);
+    }
 
+    public function testZipExistingDirectory()
+    {
+        $file = './src/';
+        $result = $this->file->zip($file,'test.zip',true);
+
+        $this->assertTrue( $result );
+        if($result)
+        {
+            $this->file->delete('test.zip');
+        }
+    }
+
+    public function testZipNonExistentDirectory()
+    {
+        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\ZipException');
+        $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/';
+        $this->file->zip($file,'test.zip',true);
     }
 
     public function testUnzipExistingFile()
     {
+        file_put_contents('test2.txt','');
+        $file = 'test2.txt';
+        $result1 = $this->file->zip($file,'test2.zip',true);
+
+        $result2 =$this->file->unzip($file,'.',true);
+        $this->assertTrue( $result2 );
+
+        if( $result1 )
+        {
+            $this->file->delete('test2.txt');
+            $this->file->delete('test2.zip');
+        }
+    }
+
+    public function testUnzipExistingDirectory()
+    {
+        $file = './src/';
+        $result = $this->file->zip($file,'test.zip',true);
+
+        if(!file_exists('tmp')){
+            mkdir('tmp',0777);
+        }
+
+        $result2 =$this->file->unzip('test.zip','./tmp',true);
+        $this->assertTrue( $result2 );
+
+        $this->assertTrue( $result );
+        if($result)
+        {
+            $this->file->delete('test.zip');
+        }
 
     }
 
     public function testUnzipNonExistentFile()
     {
+        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\ZipException');
+        $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename.'.zip';
+        $this->file->unzip($file,'.',true);
+    }
 
+    public function testUnzipToNonExistentDirectory()
+    {
+        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\ZipException');
+        $dir = '/THIS/DIRECTORY/DOES/NOT/EXIST/';
+
+        $result = $this->file->zip('./src/','test.zip',true);
+        $this->file->unzip('test.zip',$dir,true);
+
+        $this->assertTrue( $result );
+        if($result)
+        {
+            $this->file->delete('test.zip');
+        }
     }
 
     public function tearDown()
     {
-        unlink($this->filename);
+        $this->file->delete($this->filename);
+
+        if($this->file->exists('test.zip'))
+        {
+            $this->file->delete('test.zip');
+        }
+
         $this->file = NULL;
     }
 }
