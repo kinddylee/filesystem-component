@@ -6,21 +6,25 @@ All actions available in this component have been split into the 3 possible enti
 
 ## 1. File
 
-### Methods available: 
+### Methods available:
+- isReadable($filePath);
+- isWritable($filePath);
 - getExtension($filePath);
 - getModificationDate($filePath);
 - exists($filePath);
-- isReadable($filePath);
-- isWritable($filePath);
 - read($filePath);
 - write($filePath, $data, $mode = null);
 - append($filePath, $data);
 - chmod($filePath, $mode);
 - delete($filePath);
 - rename($filePath,$newFileName,$overwrite=false);
+- copy($filePath,$newFilePath,$overwrite=false);
+- move($filePath,$destinationFolder,$overwrite=false);
 - touch($filePath,$time='',$accessTime='');
-- gzip($in, $out, $overwrite=false, $param="1");
-- gunzip ($in, $out,$overwrite=false);
+- gzip($filePath, $newFileName, $overwrite=false, $param="1");
+- gunzip ($filePath, $destinationPath,$overwrite=false);
+- zip($filePath, $newFileName, $overwrite=false);
+- unzip($filePath, $destinationPath, $overwrite=false)
 
 ### Usage:
 ```
@@ -29,6 +33,19 @@ $file = new NilPortugues\Component\FileSystem\File();
 
 ## 2. Folder
 ### Methods available:
+- isReadable($path);
+- isWritable($path);
+- getModificationDate($path);
+- copy($filePath,$newFilePath,$overwrite=false);
+- move($filePath,$newFilePath);
+- exists($path);
+- create($path);
+- delete($path);
+- rename($path,$newName);
+- touch($path,$time='',$accessTime='');
+- chmod($path, $mode);
+- zip($filePath, $newFileName, $overwrite=false);
+- unzip($filePath, $newFileName, $overwrite=false);
 
 ### Usage:
 ```

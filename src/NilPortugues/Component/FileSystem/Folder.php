@@ -3,6 +3,73 @@ namespace NilPortugues\Component\FileSystem;
 
 class Folder extends Zip implements \NilPortugues\Component\FileSystem\Interfaces\FolderInterface
 {
+    //@todo:
+    public function getModificationDate($path)
+    {
+
+    }
+
+    //@todo:
+    public function copy($filePath,$newFilePath,$overwrite=false)
+    {
+
+    }
+
+    //@todo:
+    public function move($filePath,$newFilePath)
+    {
+
+    }
+
+    //@todo:
+    public function delete($path)
+    {
+
+    }
+
+    //@todo:
+    public function rename($path,$newName)
+    {
+
+    }
+
+    //@todo:
+    public function touch($path,$time='',$accessTime='')
+    {
+
+    }
+
+    //@todo:
+    public function chmod($path, $mode)
+    {
+
+    }
+
+    //@todo:
+    public function isReadable($path)
+    {
+
+    }
+
+    //@todo:
+    public function isWritable($path)
+    {
+
+    }
+
+    //@todo:
+    public function zip($filePath, $newFileName, $overwrite=false)
+    {
+
+
+    }
+
+    //@todo:
+    public function unzip($filePath, $newFileName, $overwrite=false)
+    {
+
+    }
+
     /**
      * @param string $path
      * @return bool
@@ -30,7 +97,7 @@ class Folder extends Zip implements \NilPortugues\Component\FileSystem\Interface
         }
 
         //Create the directory recursively
-        if (!is_dir($path))
+        if (!is_dir($path) && !is_file($path) )
         {
             $directory_path = "";
             $directories = explode("/",$path);
@@ -39,15 +106,16 @@ class Folder extends Zip implements \NilPortugues\Component\FileSystem\Interface
             foreach($directories as $directory)
             {
                 $directory_path .= $directory."/";
-                if (!is_dir($directory_path) )
+                if ( !is_dir($directory_path) && !is_file($directory_path) )
                 {
                     if(!is_writable($directory_path))
                     {
                         throw new \NilPortugues\Component\FileSystem\Exceptions\FolderException("Cannot create {$path} folder because {$directory_path} is not writable.");
                     }
-
-                    mkdir($directory_path);
-                    chmod($directory_path, 0777);
+                    else
+                    {
+                        mkdir($directory_path,0777);
+                    }
                 }
             }
             return true;

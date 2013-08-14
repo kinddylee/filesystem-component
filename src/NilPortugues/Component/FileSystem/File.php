@@ -5,6 +5,62 @@ use NilPortugues\Component\FileSystem\Exceptions\FileException;
 
 class File extends Zip implements \NilPortugues\Component\FileSystem\Interfaces\FileInterface
 {
+
+    /**
+     * @param string $filePath
+     * @param string $newFilePath
+     * @param bool $overwrite
+     * @return bool
+     * @throws Exceptions\FileException
+     */
+    public function copy($filePath,$newFilePath,$overwrite=false)
+    {
+        $pathWithoutFileName = pathinfo($newFilePath,PATHINFO_DIRNAME);
+
+        if (!$this->exists($filePath)) {
+            throw new FileException("File {$filePath} does not exist.");
+        }
+
+        if (!is_dir($pathWithoutFileName)) {
+            throw new FileException("Destination folder {$pathWithoutFileName} does not exist.");
+        }
+
+        if ( $overwrite==false && $this->exists($newFilePath) )
+        {
+
+            throw new FileException("Cannot rename file {$filePath} to {$newFilePath}. A file with he same name already exists at {$pathWithoutFileName}.");
+        }
+
+        return copy($filePath, $newFilePath);
+    }
+
+    /**
+     * @param string $filePath
+     * @param string $newFilePath
+     * @param bool $overwrite
+     * @return bool
+     * @throws Exceptions\FileException
+     */
+    public function move($filePath,$destinationFolder,$overwrite=false)
+    {
+        if (!$this->exists($filePath)) {
+            throw new FileException("File {$filePath} does not exist.");
+        }
+
+        if (!is_dir($destinationFolder)) {
+            throw new FileException("Destination folder {$destinationFolder} does not exist.");
+        }
+
+        $newFilePath = $destinationFolder.DIRECTORY_SEPARATOR.basename($filePath);
+        if ( $overwrite==false && $this->exists($newFilePath) )
+        {
+
+            throw new FileException("Cannot rename file {$filePath} to {$newFilePath}. A file with he same name already exists at {$destinationFolder}.");
+        }
+
+        return rename( $filePath, $newFilePath );
+    }
+
     /**
      * @param $filePath
      * @return bool|string

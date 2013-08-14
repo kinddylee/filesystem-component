@@ -3,6 +3,16 @@ namespace NilPortugues\Component\FileSystem\Interfaces;
 
 interface FileInterface
 {
+    //@todo:
+    public function copy($filePath,$newFilePath,$overwrite=false);
+
+    //@todo:
+    public function move($filePath,$destinationFolder,$overwrite=false);
+
+
+
+
+
     public function getExtension($filePath);
 
     public function getModificationDate($filePath);

@@ -20,6 +20,46 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $this->file = new \NilPortugues\Component\FileSystem\File();
     }
 
+    public function testMoveExistingFile()
+    {
+        $file = $this->filename;
+        $result1 = $this->file->move($file,"../",true);
+        $result2 = $this->file->exists('../test.txt');
+
+        $this->assertTrue($result1);
+        $this->assertTrue($result2);
+    }
+
+    public function testMoveNonExistentFile()
+    {
+        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileException');
+        $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
+        $this->file->move($file,"../",true);
+    }
+
+    public function testCopyExistingFile()
+    {
+        $file = $this->filename;
+        $result1 = $this->file->copy($file,$file.'.copy.txt',true);
+        $result2 = $this->file->exists($file.'.copy.txt');
+
+        $this->assertTrue($result1);
+        $this->assertTrue($result2);
+
+        if($result2)
+        {
+            $this->file->delete($file.'.copy.txt');
+        }
+    }
+
+    public function testCopyNonExistentFile()
+    {
+        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileException');
+        $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
+        $this->file->copy($file,"../");
+    }
+
+
     public function testGetExtensionExistingFile()
     {
         $file = $this->filename;
@@ -360,7 +400,10 @@ class FileTest extends \PHPUnit_Framework_TestCase
 
     public function tearDown()
     {
-        $this->file->delete($this->filename);
+        if($this->file->exists($this->filename))
+        {
+            $this->file->delete($this->filename);
+        }
 
         if($this->file->exists('test.zip'))
         {
