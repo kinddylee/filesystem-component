@@ -39,7 +39,7 @@ class FolderTest extends \PHPUnit_Framework_TestCase
     public function testDeleteNonExistentDirectory()
     {
         $origin = '/THIS/DIRECTORY/DOES/NOT/EXIST/';
-        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FolderException');
+        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
 
         $this->folder->delete($origin);
     }
@@ -62,7 +62,7 @@ class FolderTest extends \PHPUnit_Framework_TestCase
         $origin = '/THIS/DIRECTORY/DOES/NOT/EXIST/';
         $destination = '../';
 
-        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FolderException');
+        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
         $this->folder->copy($origin,$destination);
     }
 
@@ -71,7 +71,7 @@ class FolderTest extends \PHPUnit_Framework_TestCase
         $origin = '.';
         $destination = '.';
 
-        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FolderException');
+        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
         $this->folder->copy($origin,$destination);
     }
 
@@ -80,7 +80,7 @@ class FolderTest extends \PHPUnit_Framework_TestCase
         $origin = '.';
         $destination = '/THIS/DIRECTORY/DOES/NOT/EXIST/';
 
-        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FolderException');
+        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
         $this->folder->copy($origin,$destination);
     }
 
@@ -108,7 +108,7 @@ class FolderTest extends \PHPUnit_Framework_TestCase
         $origin = '/THIS/DIRECTORY/DOES/NOT/EXIST/';
         $destination = '../';
 
-        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FolderException');
+        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
         $this->folder->move($origin,$destination);
     }
 
@@ -117,7 +117,7 @@ class FolderTest extends \PHPUnit_Framework_TestCase
         $origin = '.';
         $destination = '.';
 
-        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FolderException');
+        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
         $this->folder->move($origin,$destination);
     }
 
@@ -126,7 +126,7 @@ class FolderTest extends \PHPUnit_Framework_TestCase
         $origin = '.';
         $destination = '/THIS/DIRECTORY/DOES/NOT/EXIST/';
 
-        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FolderException');
+        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
         $this->folder->move($origin,$destination);
     }
 
@@ -150,7 +150,7 @@ class FolderTest extends \PHPUnit_Framework_TestCase
 
     public function testFolderIsWritableNonExistentDirectory()
     {
-        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FolderException');
+        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
         $folder = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->foldername;
         $this->folder->isWritable($folder);
     }
@@ -163,7 +163,7 @@ class FolderTest extends \PHPUnit_Framework_TestCase
 
     public function testFolderIsReadableNonExistentDirectory()
     {
-        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FolderException');
+        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
         $folder = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->foldername;
         $this->folder->isReadable($folder);
     }
@@ -221,7 +221,7 @@ class FolderTest extends \PHPUnit_Framework_TestCase
 
     public function testChmodNonExistentDirectory()
     {
-        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FolderException');
+        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
 
         $folder = '/THIS/DIRECTORY/DOES/NOT/EXIST/';
         $this->folder->chmod($folder, '0755');
@@ -247,7 +247,7 @@ class FolderTest extends \PHPUnit_Framework_TestCase
 
     public function testChangeModificationDateNonExistentDirectory()
     {
-        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FolderException');
+        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
         $folder = '/THIS/DIRECTORY/DOES/NOT/EXIST/';
         $this->folder->touch($folder,time());
     }
@@ -256,20 +256,20 @@ class FolderTest extends \PHPUnit_Framework_TestCase
     {
         $folder = $this->foldername;
 
-        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FolderException');
+        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
         $this->folder->rename($folder,'ok/a');
     }
 
     public function testRenameNonExistentDirectory()
     {
-        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FolderException');
+        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
         $folder = '/THIS/DIRECTORY/DOES/NOT/EXIST/';
         $this->folder->rename($folder,'newName');
     }
 
     public function testRenameExistingDirectorySameName()
     {
-        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FolderException');
+        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
         $folder = $this->foldername;
         $this->folder->rename($folder,$folder);
     }

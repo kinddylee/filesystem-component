@@ -1,9 +1,9 @@
 <?php
 namespace NilPortugues\Component\FileSystem;
 
-use \NilPortugues\Component\FileSystem\Exceptions\FolderException;
+use \NilPortugues\Component\FileSystem\Exceptions\FileSystemException;
 
-class Folder extends Zip implements \NilPortugues\Component\FileSystem\Interfaces\FolderInterface
+class Folder extends FileSystem implements \NilPortugues\Component\FileSystem\Interfaces\FolderInterface
 {
     /**
      * Gets last modification time of a folder.
@@ -32,17 +32,17 @@ class Folder extends Zip implements \NilPortugues\Component\FileSystem\Interface
     {
         if(realpath($path) == realpath($destinationPath))
         {
-            throw new FolderException("Origin folder and destination folder cannot be the same.");
+            throw new FileSystemException("Origin folder and destination folder cannot be the same.");
         }
 
         if(!file_exists($path) || !is_dir($path) )
         {
-            throw new FolderException("Origin folder {$path} does not exist.");
+            throw new FileSystemException("Origin folder {$path} does not exist.");
         }
 
         if(!file_exists($destinationPath) || !is_dir($destinationPath))
         {
-            throw new FolderException("Destination folder {$destinationPath} does not exist.");
+            throw new FileSystemException("Destination folder {$destinationPath} does not exist.");
         }
 
         return $this->recursiveCopy($path,$destinationPath);
@@ -92,23 +92,23 @@ class Folder extends Zip implements \NilPortugues\Component\FileSystem\Interface
      * @param string $path
      * @param string $destinationPath
      * @return bool
-     * @throws Exceptions\FolderException
+     * @throws Exceptions\FileSystemException
      */
     public function move($path, $destinationPath)
     {
         if(realpath($path) == realpath($destinationPath))
         {
-            throw new FolderException("Origin folder and destination folder cannot be the same.");
+            throw new FileSystemException("Origin folder and destination folder cannot be the same.");
         }
 
         if(!file_exists($path) || !is_dir($path) )
         {
-            throw new FolderException("Origin folder {$path} does not exist.");
+            throw new FileSystemException("Origin folder {$path} does not exist.");
         }
 
         if(!file_exists($destinationPath) || !is_dir($destinationPath))
         {
-            throw new FolderException("Destination folder {$destinationPath} does not exist.");
+            throw new FileSystemException("Destination folder {$destinationPath} does not exist.");
         }
 
         return $this->recursiveMove($path,$destinationPath);
@@ -174,7 +174,7 @@ class Folder extends Zip implements \NilPortugues\Component\FileSystem\Interface
      *
      * @param $path
      * @return bool
-     * @throws Exceptions\FolderException
+     * @throws Exceptions\FileSystemException
      */
     public function delete($path)
     {
@@ -182,7 +182,7 @@ class Folder extends Zip implements \NilPortugues\Component\FileSystem\Interface
         {
             return $this->recursivelyDelete($path);
         }
-        throw new FolderException("Folder {$path} does not exist.");
+        throw new FileSystemException("Folder {$path} does not exist.");
 
     }
 
@@ -228,25 +228,25 @@ class Folder extends Zip implements \NilPortugues\Component\FileSystem\Interface
      * @param  string                   $path
      * @param  string                   $newName
      * @return bool
-     * @throws Exceptions\FolderException
+     * @throws Exceptions\FileSystemException
      */
     public function rename($path,$newName)
     {
         if(realpath($path) == realpath($newName))
         {
-            throw new FolderException("Current folder name and new name are the same.");
+            throw new FileSystemException("Current folder name and new name are the same.");
         }
 
         if (!$this->exists($path)) {
-            throw new FolderException("Folder {$path} does not exist.");
+            throw new FileSystemException("Folder {$path} does not exist.");
         }
 
         if ($this->exists($newName)) {
-            throw new FolderException("Folder {$newName} already exists. Folder {$path} cannot renamed.");
+            throw new FileSystemException("Folder {$newName} already exists. Folder {$path} cannot renamed.");
         }
 
         if ( strpos( $newName,DIRECTORY_SEPARATOR )!==false ) {
-            throw new FolderException("{$newName} has to be a valid folder name, and cannot contain the directory separator symbol ".DIRECTORY_SEPARATOR.".");
+            throw new FileSystemException("{$newName} has to be a valid folder name, and cannot contain the directory separator symbol ".DIRECTORY_SEPARATOR.".");
         }
 
         return rename( $path, $newName );
@@ -257,12 +257,12 @@ class Folder extends Zip implements \NilPortugues\Component\FileSystem\Interface
      * @param string                   $time
      * @param string                   $accessTime
      * @return bool
-     * @throws Exceptions\FolderException
+     * @throws Exceptions\FileSystemException
      */
     public function touch($path,$time='',$accessTime='')
     {
         if (!$this->isWritable($path)) {
-            throw new FolderException("Folder {$path} is not writable.");
+            throw new FileSystemException("Folder {$path} is not writable.");
         }
 
         if (empty($time)) {
@@ -290,7 +290,7 @@ class Folder extends Zip implements \NilPortugues\Component\FileSystem\Interface
     public function chmod($path, $mode)
     {
         if (!$this->exists($path)) {
-            throw new FolderException("File {$path} does not exist.");
+            throw new FileSystemException("File {$path} does not exist.");
         }
 
         return chmod($path, $mode);
@@ -298,12 +298,12 @@ class Folder extends Zip implements \NilPortugues\Component\FileSystem\Interface
     /**
      * @param string $path
      * @return bool
-     * @throws Exceptions\FolderException
+     * @throws Exceptions\FileSystemException
      */
     public function isReadable($path)
     {
         if (!$this->exists($path)) {
-            throw new FolderException("File {$path} does not exists.");
+            throw new FileSystemException("File {$path} does not exists.");
         }
 
         return is_readable($path);
@@ -312,12 +312,12 @@ class Folder extends Zip implements \NilPortugues\Component\FileSystem\Interface
     /**
      * @param string $path
      * @return bool
-     * @throws Exceptions\FolderException
+     * @throws Exceptions\FileSystemException
      */
     public function isWritable($path)
     {
         if (!$this->exists($path)) {
-            throw new FolderException("File {$path} does not exists.");
+            throw new FileSystemException("File {$path} does not exists.");
         }
 
         return is_writable($path);
@@ -339,18 +339,18 @@ class Folder extends Zip implements \NilPortugues\Component\FileSystem\Interface
     /**
      * @param string $path
      * @return bool
-     * @throws Exceptions\FolderException
+     * @throws Exceptions\FileSystemException
      */
     public function create($path)
     {
         if(file_exists($path) && is_file($path))
         {
-            throw new \NilPortugues\Component\FileSystem\Exceptions\FolderException("Cannot create the {$path} folder because a file with the same name exists.");
+            throw new \NilPortugues\Component\FileSystem\Exceptions\FileSystemException("Cannot create the {$path} folder because a file with the same name exists.");
         }
 
         if($this->exists($path))
         {
-            throw new \NilPortugues\Component\FileSystem\Exceptions\FolderException("Cannot create the {$path} folder because it already exists.");
+            throw new \NilPortugues\Component\FileSystem\Exceptions\FileSystemException("Cannot create the {$path} folder because it already exists.");
         }
 
         return mkdir($path,0755,true);

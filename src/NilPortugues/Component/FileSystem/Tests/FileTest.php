@@ -32,7 +32,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
 
     public function testMoveNonExistentFile()
     {
-        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileException');
+        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
         $this->file->move($file,"../",true);
     }
@@ -54,7 +54,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
 
     public function testCopyNonExistentFile()
     {
-        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileException');
+        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
         $this->file->copy($file,"../");
     }
@@ -106,7 +106,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
 
     public function testChangeModificationDateNonExistentFile()
     {
-        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileException');
+        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
         $this->file->touch($file,time());
     }
@@ -131,7 +131,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
 
     public function testFileIsReadableNonExistentFile()
     {
-        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileException');
+        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
         $this->file->isWritable($file);
     }
@@ -144,7 +144,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
 
     public function testFileReadNonExistentFile()
     {
-        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileException');
+        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
         $this->file->read($file);
     }
@@ -159,7 +159,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
 
     public function testFileWriteFileNotWritable()
     {
-        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileException');
+        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
         $data = 'Lorem ipsum blah blah blah';
 
@@ -174,7 +174,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
 
     public function testFileAppendNonExistentFile()
     {
-        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileException');
+        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
 
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
         $this->file->append($file, 'new data');
@@ -182,7 +182,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
 
     public function testFileChmodNonExistentFile()
     {
-        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileException');
+        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
 
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
         $this->file->chmod($file, '0755');
@@ -196,7 +196,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
 
     public function testFileDeleteNonExistentFile()
     {
-        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileException');
+        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
 
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
         $this->file->delete($file);
@@ -227,13 +227,13 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $file = $this->filename;
         $overwrite=false;
 
-        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileException');
+        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
         $this->file->rename($file,'ok/a.txt',$overwrite);
     }
 
     public function testFileRenameNonExistentFile()
     {
-        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileException');
+        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
 
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
         $this->file->rename($file,'newName.txt',false);
@@ -241,7 +241,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
 
     public function testFileRenameExistingFileNoOverwrite()
     {
-        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileException');
+        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
         $this->file->rename($file,'newName.txt',false);
     }
@@ -286,7 +286,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
 
     public function testGZipNonExistentFile()
     {
-        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileException');
+        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
         $this->file->gzip($file,$file.'.gz',true);
     }
@@ -308,7 +308,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
 
     public function testGunzipNonExistentFile()
     {
-        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileException');
+        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
 
         $this->file->gunzip($file.'.gz',$file.'.extracted.txt',true);
@@ -355,6 +355,68 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\ZipException');
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename.'.zip';
         $this->file->unzip($file,'.',true);
+    }
+
+
+    public function testIsLinkExistingFile()
+    {
+        $this->assertFalse($this->file->isLink($this->filename));
+    }
+
+    public function testIsLinkNonExistentFile()
+    {
+        $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
+
+        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
+        $this->file->isLink($file);
+    }
+
+    public function testSoftLinkNonExistentFile()
+    {
+        $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
+
+        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
+        $this->file->softSymLink($file,'alias');
+    }
+
+    public function testSoftLinkExistentFile()
+    {
+        $file = $this->filename;
+
+        $result = $this->file->softSymLink($file,'alias');
+
+        $this->assertTrue($result);
+        $this->assertTrue($this->file->isLink('alias'));
+
+        if($result)
+        {
+            $this->file->delete('alias');
+        }
+    }
+
+    public function testHardLinkExistentFile()
+    {
+        $this->file->write('realFile.txt','testing...');
+        $file = 'realFile.txt';
+
+        $result = $this->file->hardSymLink($file,'aliasHard');
+
+        $this->assertTrue($result);
+        $this->assertTrue($this->file->isLink('aliasHard'));
+
+        if($result)
+        {
+            $this->file->delete('aliasHard');
+            $this->file->delete('realFile.txt');
+        }
+    }
+
+    public function testHardLinkNonExistentFile()
+    {
+        $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
+
+        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
+        $this->file->hardSymLink($file,'alias');
     }
 
 

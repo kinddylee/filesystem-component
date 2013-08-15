@@ -1,67 +1,11 @@
 <?php
 namespace NilPortugues\Component\FileSystem;
 
-use NilPortugues\Component\FileSystem\Exceptions\FileException;
+use \NilPortugues\Component\FileSystem\Exceptions\FileSystemException as FileSystemException;
+use NilPortugues\Component\FileSystem\Interfaces\FileSystemInterface as FileSystemInterface;
 
-class FileSystem
+abstract class FileSystem extends Zip implements FileSystemInterface
 {
-    /**
-     * @param string $path
-     * @return string
-     * @throws Exceptions\FileSystemException
-     */
-    public function getAbsolutePath($path)
-    {
-        if(!file_exists($path))
-        {
-            throw new \NilPortugues\Component\FileSystem\Exceptions\FileSystemException();
-        }
-
-        return realpath($path);
-    }
-
-    /**
-     * Returns the canonical path for the given path.
-     *
-     * @param string $path
-     * @return string The canonical path.
-     */
-    public function getCanonicalPath($path)
-    {
-        $canonical = array();
-        $path = preg_split('/[\\\\\/]+/', $path);
-
-        foreach ($path as $segment) {
-            if ('.' == $segment) {
-                continue;
-            }
-
-            if ('..' == $segment) {
-                array_pop($canonical);
-            } else {
-                $canonical[] = $segment;
-            }
-        }
-
-        return join(DIRECTORY_SEPARATOR, $canonical);
-    }
-
-    /**
-     * Checks if the path is an absolute path.
-     *
-     * @param string $path
-     * @return bool
-     */
-    public function isAbsolutePath($path)
-    {
-        if (preg_match('/^([\\\\\/]|[a-zA-Z]\:[\\\\\/])/', $path) || (false !== filter_var($path, FILTER_VALIDATE_URL))) {
-            return true;
-        }
-
-        return false;
-    }
-
-
     /**
      * @param string $original
      * @param string $alias
@@ -75,10 +19,9 @@ class FileSystem
             throw new \NilPortugues\Component\FileSystem\Exceptions\FileSystemException("Cannot link {$original} because it does not exist.");
         }
 
-        if(is_link($original))
+        if(file_exists($alias))
         {
-            //@todo: check if we can do a link of a system links, if not, remove IF statement.
-            throw new \NilPortugues\Component\FileSystem\Exceptions\FileSystemException();
+            throw new \NilPortugues\Component\FileSystem\Exceptions\FileSystemException("Cannot create link {$alias} because a file, directory or link with this name already exists.");
         }
 
         return symlink($original,$alias);
@@ -92,18 +35,41 @@ class FileSystem
      */
     public function hardSymLink($original, $alias)
     {
-        if(!is_dir($original))
+        if(!file_exists($original))
         {
-            throw new \NilPortugues\Component\FileSystem\Exceptions\FileSystemException('Hard linking a directory is not permitted.');
+            throw new \NilPortugues\Component\FileSystem\Exceptions\FileSystemException("Cannot link {$original} because it does not exist.");
         }
 
-        if(is_link($original))
+        if(file_exists($alias))
         {
-            //@todo: check if we can do a link of a system links, if not, remove IF statement.
-            throw new \NilPortugues\Component\FileSystem\Exceptions\FileSystemException();
+            throw new \NilPortugues\Component\FileSystem\Exceptions\FileSystemException("Cannot create link {$alias} because a file, directory or link with this name already exists.");
         }
 
         return link($original,$alias);
+    }
+
+
+    /**
+     * @param string $path
+     * @return bool
+     * @throws FileSystemException
+     */
+    public function isLink($path)
+    {
+        if (!$this->exists($path))
+        {
+            throw new FileSystemException("{$path} does not exist.");
+        }
+
+        if( true == is_link($path))
+        {
+            return true;
+        }
+        else
+        {
+            $filestat = stat($path);
+            return ($filestat['nlink']>1);
+        }
     }
 
 

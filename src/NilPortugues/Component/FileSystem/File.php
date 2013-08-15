@@ -1,9 +1,9 @@
 <?php
 namespace NilPortugues\Component\FileSystem;
 
-use NilPortugues\Component\FileSystem\Exceptions\FileException;
+use NilPortugues\Component\FileSystem\Exceptions\FileSystemException;
 
-class File extends Zip implements \NilPortugues\Component\FileSystem\Interfaces\FileInterface
+class File extends FileSystem implements \NilPortugues\Component\FileSystem\Interfaces\FileInterface
 {
 
     /**
@@ -11,24 +11,24 @@ class File extends Zip implements \NilPortugues\Component\FileSystem\Interfaces\
      * @param string $newFilePath
      * @param bool $overwrite
      * @return bool
-     * @throws Exceptions\FileException
+     * @throws Exceptions\FileSystemException
      */
     public function copy($filePath,$newFilePath,$overwrite=false)
     {
         $pathWithoutFileName = pathinfo($newFilePath,PATHINFO_DIRNAME);
 
         if (!$this->exists($filePath)) {
-            throw new FileException("File {$filePath} does not exist.");
+            throw new FileSystemException("File {$filePath} does not exist.");
         }
 
         if (!is_dir($pathWithoutFileName)) {
-            throw new FileException("Destination folder {$pathWithoutFileName} does not exist.");
+            throw new FileSystemException("Destination folder {$pathWithoutFileName} does not exist.");
         }
 
         if ( $overwrite==false && $this->exists($newFilePath) )
         {
 
-            throw new FileException("Cannot rename file {$filePath} to {$newFilePath}. A file with he same name already exists at {$pathWithoutFileName}.");
+            throw new FileSystemException("Cannot rename file {$filePath} to {$newFilePath}. A file with he same name already exists at {$pathWithoutFileName}.");
         }
 
         return copy($filePath, $newFilePath);
@@ -39,23 +39,23 @@ class File extends Zip implements \NilPortugues\Component\FileSystem\Interfaces\
      * @param string $newFilePath
      * @param bool $overwrite
      * @return bool
-     * @throws Exceptions\FileException
+     * @throws Exceptions\FileSystemException
      */
     public function move($filePath,$destinationFolder,$overwrite=false)
     {
         if (!$this->exists($filePath)) {
-            throw new FileException("File {$filePath} does not exist.");
+            throw new FileSystemException("File {$filePath} does not exist.");
         }
 
         if (!is_dir($destinationFolder)) {
-            throw new FileException("Destination folder {$destinationFolder} does not exist.");
+            throw new FileSystemException("Destination folder {$destinationFolder} does not exist.");
         }
 
         $newFilePath = $destinationFolder.DIRECTORY_SEPARATOR.basename($filePath);
         if ( $overwrite==false && $this->exists($newFilePath) )
         {
 
-            throw new FileException("Cannot rename file {$filePath} to {$newFilePath}. A file with he same name already exists at {$destinationFolder}.");
+            throw new FileSystemException("Cannot rename file {$filePath} to {$newFilePath}. A file with he same name already exists at {$destinationFolder}.");
         }
 
         return rename( $filePath, $newFilePath );
@@ -97,12 +97,12 @@ class File extends Zip implements \NilPortugues\Component\FileSystem\Interfaces\
      * @param  string                   $time
      * @param  string                   $accessTime
      * @return bool
-     * @throws Exceptions\FileException
+     * @throws Exceptions\FileSystemException
      */
     public function touch($filePath,$time='',$accessTime='')
     {
         if (!$this->isWritable($filePath)) {
-            throw new FileException("File {$filePath} is not writable.");
+            throw new FileSystemException("File {$filePath} is not writable.");
         }
 
         if (empty($time)) {
@@ -137,12 +137,12 @@ class File extends Zip implements \NilPortugues\Component\FileSystem\Interfaces\
      *
      * @param  string                   $filePath
      * @return bool
-     * @throws Exceptions\FileException
+     * @throws Exceptions\FileSystemException
      */
     public function isReadable($filePath)
     {
         if (!$this->exists($filePath)) {
-            throw new FileException("File {$filePath} does not exists.");
+            throw new FileSystemException("File {$filePath} does not exists.");
         }
 
         return is_readable($filePath);
@@ -151,12 +151,12 @@ class File extends Zip implements \NilPortugues\Component\FileSystem\Interfaces\
     /**
      * @param $filePath
      * @return bool
-     * @throws Exceptions\FileException
+     * @throws Exceptions\FileSystemException
      */
     public function isWritable($filePath)
     {
         if (!$this->exists($filePath)) {
-            throw new FileException("File {$filePath} does not exists.");
+            throw new FileSystemException("File {$filePath} does not exists.");
         }
 
         return is_writable($filePath);
@@ -167,18 +167,18 @@ class File extends Zip implements \NilPortugues\Component\FileSystem\Interfaces\
      *
      * @param  string                   $filePath
      * @return string
-     * @throws Exceptions\FileException
+     * @throws Exceptions\FileSystemException
      */
     public function read($filePath)
     {
         if (!$this->exists($filePath)) {
-            throw new FileException("File {$filePath} does not exist.");
+            throw new FileSystemException("File {$filePath} does not exist.");
         }
 
         if ( $this->isReadable($filePath) ) {
             return file_get_contents($filePath);
         } else {
-            throw new FileException("File {$filePath} is not readable.");
+            throw new FileSystemException("File {$filePath} is not readable.");
         }
     }
 
@@ -190,17 +190,29 @@ class File extends Zip implements \NilPortugues\Component\FileSystem\Interfaces\
      * @param  string $data
      * @param  string $mode
      * @return int    The number of bytes (not chars!) that were written to the file, or FALSE on failure.
-     * @throws Exceptions\FileException
+     * @throws Exceptions\FileSystemException
      */
-    public function write($filePath, $data, $mode = null)
+    public function write($filePath, $data, $mode = 0644)
     {
-        if (!$this->isWritable($filePath) || !is_file($filePath)) {
-            throw new FileException("File {$filePath} is not writable.");
+        $dir = pathinfo($filePath,PATHINFO_DIRNAME);
+        if(!file_exists($dir) && !is_dir($dir))
+        {
+            throw new FileSystemException("Folder {$dir} does not exist.");
         }
 
-        $chmod = !is_null($mode) && !is_file($filePath);
-        $res = file_put_contents($filePath, $data, LOCK_EX);
-        $chmod && $this->chmod($filePath, $mode);
+        if(!file_exists($filePath))
+        {
+            $res = file_put_contents($filePath, $data);
+        }
+        else
+        {
+            if (!$this->isWritable($filePath) || !is_file($filePath)) {
+                throw new FileSystemException("File {$filePath} is not writable.");
+            }
+            $res = file_put_contents($filePath, $data);
+        }
+
+        $this->chmod($filePath, $mode);
 
         return $res;
     }
@@ -211,12 +223,12 @@ class File extends Zip implements \NilPortugues\Component\FileSystem\Interfaces\
      * @param  string  $filePath
      * @param  string  $data
      * @return integer The number of bytes that were written to the file, or FALSE on failure.
-     * @throws Exceptions\FileException
+     * @throws Exceptions\FileSystemException
      */
     public function append($filePath, $data)
     {
         if (!$this->isWritable($filePath) || !is_file($filePath)) {
-            throw new FileException("File {$filePath} is not writable.");
+            throw new FileSystemException("File {$filePath} is not writable.");
         }
 
         return file_put_contents($filePath, $data, LOCK_EX | FILE_APPEND);
@@ -228,12 +240,12 @@ class File extends Zip implements \NilPortugues\Component\FileSystem\Interfaces\
      * @param  string  $filePath
      * @param  string  $mode
      * @return boolean TRUE on success or FALSE on failure.
-     * @throws Exceptions\FileException
+     * @throws Exceptions\FileSystemException
      */
     public function chmod($filePath, $mode)
     {
         if (!$this->exists($filePath)) {
-            throw new FileException("File {$filePath} does not exist.");
+            throw new FileSystemException("File {$filePath} does not exist.");
         }
 
         return chmod($filePath, $mode);
@@ -244,14 +256,14 @@ class File extends Zip implements \NilPortugues\Component\FileSystem\Interfaces\
      *
      * @param  string                   $filePath
      * @return bool
-     * @throws Exceptions\FileException
+     * @throws Exceptions\FileSystemException
      */
     public function delete($filePath)
     {
         if ( $this->exists($filePath) ) {
             return unlink($filePath);
         } else {
-            throw new FileException("File {$filePath} does not exist.");
+            throw new FileSystemException("File {$filePath} does not exist.");
         }
     }
 
@@ -262,23 +274,23 @@ class File extends Zip implements \NilPortugues\Component\FileSystem\Interfaces\
      * @param  string                   $newFileName
      * @param  bool                     $overwrite
      * @return bool
-     * @throws Exceptions\FileException
+     * @throws Exceptions\FileSystemException
      */
     public function rename($filePath,$newFileName,$overwrite=false)
     {
         if (!$this->exists($filePath)) {
-            throw new FileException("File {$filePath} does not exist.");
+            throw new FileSystemException("File {$filePath} does not exist.");
         }
 
         if ( strpos( $newFileName,DIRECTORY_SEPARATOR )!==false ) {
-            throw new FileException("{$newFileName} has to be a valid file name, and cannot contain the directory separator symbol ".DIRECTORY_SEPARATOR.".");
+            throw new FileSystemException("{$newFileName} has to be a valid file name, and cannot contain the directory separator symbol ".DIRECTORY_SEPARATOR.".");
         }
 
         $pathWithoutFileName = pathinfo($filePath,PATHINFO_DIRNAME);
         $newFilePath = $pathWithoutFileName.DIRECTORY_SEPARATOR.$newFileName;
 
         if ( $overwrite==false && $this->exists($newFilePath) ) {
-            throw new FileException("Cannot rename file {$filePath} to {$newFileName}. A file with he same name already exists at {$pathWithoutFileName}.");
+            throw new FileSystemException("Cannot rename file {$filePath} to {$newFileName}. A file with he same name already exists at {$pathWithoutFileName}.");
         }
 
         return rename( $filePath, $newFilePath );
@@ -293,20 +305,20 @@ class File extends Zip implements \NilPortugues\Component\FileSystem\Interfaces\
      * @param bool $overwrite
      * @param string $param
      * @return bool
-     * @throws Exceptions\FileException
+     * @throws Exceptions\FileSystemException
      */
     public function gzip($filePath, $newFileName, $overwrite=false, $param="1")
     {
         if (!$this->exists($filePath)) {
-            throw new FileException("File {$filePath} does not exist.");
+            throw new FileSystemException("File {$filePath} does not exist.");
         }
 
         if ($overwrite==false && $this->exists($newFileName)) {
-            throw new FileException("File {$newFileName} cannot be created because it already exists.");
+            throw new FileSystemException("File {$newFileName} cannot be created because it already exists.");
         }
 
         if ( !is_writable(dirname($newFileName)) ) {
-            throw new FileException("Cannot write {$newFileName} in the file system.");
+            throw new FileSystemException("Cannot write {$newFileName} in the file system.");
         }
 
         $in_file = fopen ($filePath, "rb");
@@ -332,20 +344,20 @@ class File extends Zip implements \NilPortugues\Component\FileSystem\Interfaces\
      * @param $newFileName
      * @param bool $overwrite
      * @return bool
-     * @throws Exceptions\FileException
+     * @throws Exceptions\FileSystemException
      */
     public function gunzip($filePath,$newFileName,$overwrite=false)
     {
         if (!$this->exists($filePath)) {
-            throw new FileException("File {$filePath} does not exist.");
+            throw new FileSystemException("File {$filePath} does not exist.");
         }
 
         if ($overwrite==false && $this->exists($newFileName)) {
-            throw new FileException("File {$newFileName} cannot be created because it already exists.");
+            throw new FileSystemException("File {$newFileName} cannot be created because it already exists.");
         }
 
         if ( !is_writable(dirname($newFileName)) ) {
-            throw new FileException("Cannot write {$newFileName} in the file system.");
+            throw new FileSystemException("Cannot write {$newFileName} in the file system.");
         }
 
         $in_file = gzopen ($filePath, "rb");
