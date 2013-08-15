@@ -120,6 +120,11 @@ abstract class Zip
             throw new \NilPortugues\Component\FileSystem\Exceptions\ZipException("File {$filePath} does not exist therefore it cannot be unzipped.");
         }
 
+        if(!file_exists($destinationPath) || !is_dir($destinationPath))
+        {
+            throw new \NilPortugues\Component\FileSystem\Exceptions\ZipException("Destination folder {$destinationPath} does not exist.");
+        }
+
         $unzipPath = $filePath;
         if(file_exists($unzipPath) && $overwrite==false)
         {

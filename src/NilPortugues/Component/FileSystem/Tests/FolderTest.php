@@ -13,26 +13,48 @@ class FolderTest extends \PHPUnit_Framework_TestCase
     {
         $this->folder = new \NilPortugues\Component\FileSystem\Folder();
 
-        mkdir('test');
-        $this->foldername = realpath('./test');
+        if(!file_exists('test'))
+        {
+            mkdir('test',0777);
+        }
+        $this->foldername = realpath('test');
     }
 
-    public function testDeleteExistingOriginDirectory()
+    public function testDeleteExistingDirectory()
     {
+        $result = $this->folder->create($this->foldername.DIRECTORY_SEPARATOR.'hello');
+        $this->assertTrue($result);
 
+        file_put_contents($this->foldername.DIRECTORY_SEPARATOR.'hello'.DIRECTORY_SEPARATOR.'test.txt',rand(100,500));
+
+        $result = $this->folder->delete($this->foldername);
+
+        $this->assertFalse(file_exists($this->foldername.DIRECTORY_SEPARATOR.'hello'.DIRECTORY_SEPARATOR.'test.txt'));
+        $this->assertFalse(file_exists($this->foldername.DIRECTORY_SEPARATOR.'hello'));
+        $this->assertFalse(file_exists($this->foldername));
+        $this->assertTrue($result);
     }
 
-    public function testDeleteNonExistentOriginDirectory()
+
+    public function testDeleteNonExistentDirectory()
     {
         $origin = '/THIS/DIRECTORY/DOES/NOT/EXIST/';
         $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FolderException');
+
         $this->folder->delete($origin);
     }
 
-
     public function testCopyExistingOriginDirectory()
     {
+        mkdir('copy-test');
+        $result = $this->folder->copy('src','copy-test');
+        $result2 = scandir('src');
+        $result3 = scandir('copy-test');
 
+        $this->assertTrue($result);
+        $this->assertEquals($result2,$result3);
+
+        $this->folder->delete('copy-test');
     }
 
     public function testCopyNonExistentOriginDirectory()
@@ -44,9 +66,13 @@ class FolderTest extends \PHPUnit_Framework_TestCase
         $this->folder->copy($origin,$destination);
     }
 
-    public function testCopyExistingDestinationDirectory()
+    public function testCopyExistingDirectoryToTheSameExistingDirectory()
     {
+        $origin = '.';
+        $destination = '.';
 
+        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FolderException');
+        $this->folder->copy($origin,$destination);
     }
 
     public function testCopyNonExistentDestinationDirectory()
@@ -59,12 +85,9 @@ class FolderTest extends \PHPUnit_Framework_TestCase
     }
 
 
-
-
-
     public function testMoveExistingOriginDirectory()
     {
-
+        //@todo
     }
 
     public function testMoveNonExistentOriginDirectory()
@@ -78,7 +101,7 @@ class FolderTest extends \PHPUnit_Framework_TestCase
 
     public function testMoveExistingDestinationDirectory()
     {
-
+        //@todo
     }
 
     public function testMoveNonExistentDestinationDirectory()
@@ -89,6 +112,9 @@ class FolderTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FolderException');
         $this->folder->move($origin,$destination);
     }
+
+
+
 
 
 
@@ -166,6 +192,7 @@ class FolderTest extends \PHPUnit_Framework_TestCase
         if($result)
         {
             unlink('test.zip');
+            $this->folder->delete('tmp');
         }
 
     }
@@ -175,23 +202,23 @@ class FolderTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\ZipException');
         $dir = '/THIS/DIRECTORY/DOES/NOT/EXIST/';
 
-        $result = $this->folder->zip('./src/','test.zip',true);
+        $this->folder->zip('./src/','test.zip',true);
         $this->folder->unzip('test.zip',$dir,true);
-
-        $this->assertTrue( $result );
-        if($result)
-        {
-            unlink('test.zip');
-        }
     }
 
     public function tearDown()
     {
-        $this->folder = NULL;
-
         if(file_exists($this->foldername))
         {
             rmdir($this->foldername);
         }
+
+        if(file_exists('test.zip'))
+        {
+            unlink('test.zip');
+        }
+
+        $this->folder = NULL;
     }
+
 }

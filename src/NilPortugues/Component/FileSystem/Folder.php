@@ -20,6 +20,11 @@ class Folder extends Zip implements \NilPortugues\Component\FileSystem\Interface
      */
     public function copy($path,$destinationPath)
     {
+        if(realpath($path) == realpath($destinationPath))
+        {
+            throw new FolderException("Origin folder and destination folder cannot be the same.");
+        }
+
         if(!file_exists($path) || !is_dir($path) )
         {
             throw new FolderException("Origin folder {$path} does not exist.");
@@ -147,12 +152,12 @@ class Folder extends Zip implements \NilPortugues\Component\FileSystem\Interface
      */
     public function delete($path)
     {
-        if(!file_exists($path) || !is_dir($path) )
+        if(file_exists($path) && is_dir($path) )
         {
-            throw new FolderException("Folder {$path} does not exist.");
+            return $this->recursivelyDelete($path);
         }
+        throw new FolderException("Folder {$path} does not exist.");
 
-        return $this->recursivelyDelete($path);
     }
 
     /**
@@ -268,30 +273,6 @@ class Folder extends Zip implements \NilPortugues\Component\FileSystem\Interface
             throw new \NilPortugues\Component\FileSystem\Exceptions\FolderException("Cannot create the {$path} folder because it already exists.");
         }
 
-        //Create the directory recursively
-        if (!is_dir($path) && !is_file($path) )
-        {
-            $directory_path = "";
-            $directories = explode("/",$path);
-            array_pop($directories);
-
-            foreach($directories as $directory)
-            {
-                $directory_path .= $directory."/";
-                if ( !is_dir($directory_path) && !is_file($directory_path) )
-                {
-                    if(!is_writable($directory_path))
-                    {
-                        throw new \NilPortugues\Component\FileSystem\Exceptions\FolderException("Cannot create {$path} folder because {$directory_path} is not writable.");
-                    }
-                    else
-                    {
-                        mkdir($directory_path,0777);
-                    }
-                }
-            }
-            return true;
-        }
-        return false;
+        return mkdir($path,0755,true);
     }
 }
