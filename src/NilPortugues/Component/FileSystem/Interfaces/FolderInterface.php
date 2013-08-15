@@ -5,19 +5,25 @@ interface FolderInterface
 {
     public function getModificationDate($path);
 
-    //Adding an overwrite flag means, first, read all files in path, read all files in destination file
-    //If there are coincidences, and overwrite == false, throw exception.
-    public function copy($path,$destinationPath);   //ok
+    /**
+     * @todo: new functionality
+     * Adding an overwrite flag means, first, read all files in path, read all files in destination file
+     * If there are coincidences, and overwrite == false, throw exception.
+     */
+    public function copy($path,$destinationPath); 
 
-    //Adding an overwrite flag means, first, read all files in path, read all files in destination file
-    //If there are coincidences, and overwrite == false, throw exception.
+    /**
+     * @todo: new functionality
+     * Adding an overwrite flag means, first, read all files in path, read all files in destination file
+     * If there are coincidences, and overwrite == false, throw exception.
+     */
     public function move($path,$destinationPath);
 
-    public function exists($path);  //OK
+    public function exists($path);
 
-    public function create($path); // ok
+    public function create($path);
 
-    public function delete($path); // ok
+    public function delete($path);
 
     public function rename($path,$newName);
 
@@ -25,11 +31,11 @@ interface FolderInterface
 
     public function chmod($path, $mode);
 
-    public function isReadable($path);  //OK
+    public function isReadable($path);
 
-    public function isWritable($path);  //OK
+    public function isWritable($path);
 
-    public function zip($filePath, $newFileName, $overwrite=false);  //OK
+    public function zip($filePath, $newFileName, $overwrite=false);
 
-    public function unzip($filePath, $newFileName, $overwrite=false);  //OK
+    public function unzip($filePath, $newFileName, $overwrite=false);
 }

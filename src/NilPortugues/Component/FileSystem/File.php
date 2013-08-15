@@ -101,11 +101,6 @@ class File extends Zip implements \NilPortugues\Component\FileSystem\Interfaces\
      */
     public function touch($filePath,$time='',$accessTime='')
     {
-        clearstatcache();
-        if (!$this->exists($filePath)) {
-            throw new FileException("File {$filePath} does not exists.");
-        }
-
         if (!$this->isWritable($filePath)) {
             throw new FileException("File {$filePath} is not writable.");
         }

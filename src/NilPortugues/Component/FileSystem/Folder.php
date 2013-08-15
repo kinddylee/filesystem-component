@@ -5,10 +5,20 @@ use \NilPortugues\Component\FileSystem\Exceptions\FolderException;
 
 class Folder extends Zip implements \NilPortugues\Component\FileSystem\Interfaces\FolderInterface
 {
-    //@todo:
+    /**
+     * Gets last modification time of a folder.
+     *
+     * @param  string $filename
+     * @return bool|int
+     */
     public function getModificationDate($path)
     {
+        clearstatcache();
+        if ($this->exists($path)) {
+            return filemtime($path);
+        }
 
+        return false;
     }
 
      /**
@@ -86,6 +96,11 @@ class Folder extends Zip implements \NilPortugues\Component\FileSystem\Interface
      */
     public function move($path, $destinationPath)
     {
+        if(realpath($path) == realpath($destinationPath))
+        {
+            throw new FolderException("Origin folder and destination folder cannot be the same.");
+        }
+
         if(!file_exists($path) || !is_dir($path) )
         {
             throw new FolderException("Origin folder {$path} does not exist.");
@@ -124,6 +139,8 @@ class Folder extends Zip implements \NilPortugues\Component\FileSystem\Interface
             }
         }
 
+        $path = $path . DIRECTORY_SEPARATOR;
+
         // Open the source directory to read in files
         $i = new \DirectoryIterator($path);
         foreach($i as $f)
@@ -135,10 +152,19 @@ class Folder extends Zip implements \NilPortugues\Component\FileSystem\Interface
             else if(!$f->isDot() && $f->isDir())
             {
                 $this->recursiveMove($f->getRealPath(), $destinationPath.DIRECTORY_SEPARATOR.$f);
-                unlink($f->getRealPath());
+
+                if(is_file($f->getRealPath()) || is_link($f->getRealPath()))
+                {
+                    unlink($f->getRealPath());
+                }
+
+                if(is_dir($f->getRealPath()))
+                {
+                    rmdir($f->getRealPath());
+                }
+
             }
         }
-        unlink($path);
 
         return true;
     }
@@ -196,25 +222,79 @@ class Folder extends Zip implements \NilPortugues\Component\FileSystem\Interface
         return rmdir($path);
     }
 
-
-    //@todo:
+    /**
+     * Renames a folder. Throws exception if a folder with the new name already exists in $path directory.
+     *
+     * @param  string                   $path
+     * @param  string                   $newName
+     * @return bool
+     * @throws Exceptions\FolderException
+     */
     public function rename($path,$newName)
     {
+        if(realpath($path) == realpath($newName))
+        {
+            throw new FolderException("Current folder name and new name are the same.");
+        }
 
+        if (!$this->exists($path)) {
+            throw new FolderException("Folder {$path} does not exist.");
+        }
+
+        if ($this->exists($newName)) {
+            throw new FolderException("Folder {$newName} already exists. Folder {$path} cannot renamed.");
+        }
+
+        if ( strpos( $newName,DIRECTORY_SEPARATOR )!==false ) {
+            throw new FolderException("{$newName} has to be a valid folder name, and cannot contain the directory separator symbol ".DIRECTORY_SEPARATOR.".");
+        }
+
+        return rename( $path, $newName );
     }
 
-    //@todo:
+    /**
+     * @param string $path
+     * @param string                   $time
+     * @param string                   $accessTime
+     * @return bool
+     * @throws Exceptions\FolderException
+     */
     public function touch($path,$time='',$accessTime='')
     {
+        if (!$this->isWritable($path)) {
+            throw new FolderException("Folder {$path} is not writable.");
+        }
 
+        if (empty($time)) {
+            //change modification date
+            return touch($path);
+        } else {
+            if (empty($accessTime)) {
+                //change modification date with the specified date
+                return touch($path,$time);
+            } else {
+                //change access time
+                return touch($path,$time,$accessTime);
+            }
+        }
     }
 
-    //@todo:
+    /**
+     * Changes a folder access permissions.
+     *
+     * @param  string  $path
+     * @param  string  $mode
+     * @return boolean TRUE on success or FALSE on failure.
+     * @throws Exceptions\FileException
+     */
     public function chmod($path, $mode)
     {
+        if (!$this->exists($path)) {
+            throw new FolderException("File {$path} does not exist.");
+        }
 
+        return chmod($path, $mode);
     }
-
     /**
      * @param string $path
      * @return bool

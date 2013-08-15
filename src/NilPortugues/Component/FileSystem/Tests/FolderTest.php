@@ -84,10 +84,23 @@ class FolderTest extends \PHPUnit_Framework_TestCase
         $this->folder->copy($origin,$destination);
     }
 
-
     public function testMoveExistingOriginDirectory()
     {
-        //@todo
+        $result = $this->folder->create($this->foldername.DIRECTORY_SEPARATOR.'hello');
+        $this->assertTrue($result);
+
+        file_put_contents($this->foldername.DIRECTORY_SEPARATOR.'hello'.DIRECTORY_SEPARATOR.'test.txt',rand(100,500));
+
+        $origin = $this->foldername;
+        $destination = '../';
+
+        $result = $this->folder->move($origin,$destination);
+        $this->assertTrue($result);
+
+        if($result)
+        {
+            $this->folder->delete('../hello');
+        }
     }
 
     public function testMoveNonExistentOriginDirectory()
@@ -99,9 +112,13 @@ class FolderTest extends \PHPUnit_Framework_TestCase
         $this->folder->move($origin,$destination);
     }
 
-    public function testMoveExistingDestinationDirectory()
+    public function testMoveExistingDirectoryToTheSameExistingDirectory()
     {
-        //@todo
+        $origin = '.';
+        $destination = '.';
+
+        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FolderException');
+        $this->folder->move($origin,$destination);
     }
 
     public function testMoveNonExistentDestinationDirectory()
@@ -112,11 +129,6 @@ class FolderTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FolderException');
         $this->folder->move($origin,$destination);
     }
-
-
-
-
-
 
     public function testFolderExistsExistingDirectory()
     {
@@ -204,6 +216,74 @@ class FolderTest extends \PHPUnit_Framework_TestCase
 
         $this->folder->zip('./src/','test.zip',true);
         $this->folder->unzip('test.zip',$dir,true);
+    }
+
+
+    public function testChmodNonExistentDirectory()
+    {
+        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FolderException');
+
+        $folder = '/THIS/DIRECTORY/DOES/NOT/EXIST/';
+        $this->folder->chmod($folder, '0755');
+    }
+
+    public function testChmodExistingDirectory()
+    {
+        $folder = $this->foldername;
+        $this->assertTrue($this->folder->chmod($folder, '0777'));
+    }
+
+    public function testChangeModificationDateExistingDirectory()
+    {
+        $folder = $this->foldername;
+        $original = $this->folder->getModificationDate($folder);
+
+        $time = time()-3600;
+        $this->folder->touch($folder,$time);
+        $result = $this->folder->getModificationDate($folder);
+
+        $this->assertEquals($original-3600,$result);
+    }
+
+    public function testChangeModificationDateNonExistentDirectory()
+    {
+        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FolderException');
+        $folder = '/THIS/DIRECTORY/DOES/NOT/EXIST/';
+        $this->folder->touch($folder,time());
+    }
+
+    public function testRenameInvalidNewFilename()
+    {
+        $folder = $this->foldername;
+
+        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FolderException');
+        $this->folder->rename($folder,'ok/a');
+    }
+
+    public function testRenameNonExistentDirectory()
+    {
+        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FolderException');
+        $folder = '/THIS/DIRECTORY/DOES/NOT/EXIST/';
+        $this->folder->rename($folder,'newName');
+    }
+
+    public function testRenameExistingDirectorySameName()
+    {
+        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FolderException');
+        $folder = $this->foldername;
+        $this->folder->rename($folder,$folder);
+    }
+
+    public function testRenameValidNewName()
+    {
+        $folder = $this->foldername;
+        $result = $this->folder->rename($folder,'ok');
+
+        $this->assertTrue($result);
+        if($result)
+        {
+            $this->folder->delete('ok');
+        }
     }
 
     public function tearDown()

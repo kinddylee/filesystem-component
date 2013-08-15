@@ -208,6 +208,20 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->file->delete( 'temp.txt' ));
     }
 
+    public function testFileRenameValidNewFilename()
+    {
+        $file = $this->filename;
+        $overwrite=false;
+
+        $result = $this->file->rename($file,'ok.txt',$overwrite);
+
+        $this->assertTrue($result);
+        if($result)
+        {
+            $this->file->delete('ok.txt');
+        }
+    }
+
     public function testFileRenameInvalidNewFilename()
     {
         $file = $this->filename;
