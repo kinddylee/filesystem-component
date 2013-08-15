@@ -138,11 +138,59 @@ class Folder extends Zip implements \NilPortugues\Component\FileSystem\Interface
         return true;
     }
 
-    //@todo:
+    /**
+     * Removes a directory and all the files and directories within it.
+     *
+     * @param $path
+     * @return bool
+     * @throws Exceptions\FolderException
+     */
     public function delete($path)
     {
+        if(!file_exists($path) || !is_dir($path) )
+        {
+            throw new FolderException("Folder {$path} does not exist.");
+        }
 
+        return $this->recursivelyDelete($path);
     }
+
+    /**
+     * Recursively deletes files and directories
+     *
+     * @param string $path
+     * @return bool
+     */
+    protected function recursivelyDelete($path)
+    {
+        if (!file_exists($path))
+        {
+            return true;
+        }
+
+        if (!is_dir($path) || is_link($path))
+        {
+            return unlink($path);
+        }
+
+        $dirFiles = scandir($path);
+        foreach ($dirFiles as $item)
+        {
+            if ($item == '.' || $item == '..') continue;
+
+            if (!$this->recursivelyDelete($path . DIRECTORY_SEPARATOR . $item))
+            {
+                chmod($path . DIRECTORY_SEPARATOR . $item, 0777);
+
+                if (!$this->recursivelyDelete($path . DIRECTORY_SEPARATOR . $item))
+                {
+                    return false;
+                }
+            };
+        }
+        return rmdir($path);
+    }
+
 
     //@todo:
     public function rename($path,$newName)

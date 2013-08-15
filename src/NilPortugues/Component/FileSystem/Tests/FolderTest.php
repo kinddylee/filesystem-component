@@ -17,7 +17,17 @@ class FolderTest extends \PHPUnit_Framework_TestCase
         $this->foldername = realpath('./test');
     }
 
+    public function testDeleteExistingOriginDirectory()
+    {
 
+    }
+
+    public function testDeleteNonExistentOriginDirectory()
+    {
+        $origin = '/THIS/DIRECTORY/DOES/NOT/EXIST/';
+        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FolderException');
+        $this->folder->delete($origin);
+    }
 
 
     public function testCopyExistingOriginDirectory()
