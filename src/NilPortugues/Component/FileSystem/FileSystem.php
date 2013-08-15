@@ -70,9 +70,9 @@ class FileSystem
      */
     public function softSymLink($original, $alias)
     {
-        if((!is_file($original) || !is_dir($original)))
+        if(!file_exists($original))
         {
-            throw new \NilPortugues\Component\FileSystem\Exceptions\FileSystemException();
+            throw new \NilPortugues\Component\FileSystem\Exceptions\FileSystemException("Cannot link {$original} because it does not exist.");
         }
 
         if(is_link($original))
@@ -92,9 +92,9 @@ class FileSystem
      */
     public function hardSymLink($original, $alias)
     {
-        if((!is_file($original) || !is_dir($original)))
+        if(!is_dir($original))
         {
-            throw new \NilPortugues\Component\FileSystem\Exceptions\FileSystemException();
+            throw new \NilPortugues\Component\FileSystem\Exceptions\FileSystemException('Hard linking a directory is not permitted.');
         }
 
         if(is_link($original))

@@ -300,7 +300,6 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $this->file->gunzip($file.'.gz',$file.'.extracted.txt',true);
     }
 
-
     public function testZipExistingFile()
     {
         file_put_contents('test.txt','');
@@ -321,25 +320,6 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $this->file->zip($file,$file.'.zip',true);
     }
 
-    public function testZipExistingDirectory()
-    {
-        $file = './src/';
-        $result = $this->file->zip($file,'test.zip',true);
-
-        $this->assertTrue( $result );
-        if($result)
-        {
-            $this->file->delete('test.zip');
-        }
-    }
-
-    public function testZipNonExistentDirectory()
-    {
-        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\ZipException');
-        $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/';
-        $this->file->zip($file,'test.zip',true);
-    }
-
     public function testUnzipExistingFile()
     {
         file_put_contents('test2.txt','');
@@ -356,26 +336,6 @@ class FileTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    public function testUnzipExistingDirectory()
-    {
-        $file = './src/';
-        $result = $this->file->zip($file,'test.zip',true);
-
-        if(!file_exists('tmp')){
-            mkdir('tmp',0777);
-        }
-
-        $result2 =$this->file->unzip('test.zip','./tmp',true);
-        $this->assertTrue( $result2 );
-
-        $this->assertTrue( $result );
-        if($result)
-        {
-            $this->file->delete('test.zip');
-        }
-
-    }
-
     public function testUnzipNonExistentFile()
     {
         $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\ZipException');
@@ -383,20 +343,6 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $this->file->unzip($file,'.',true);
     }
 
-    public function testUnzipToNonExistentDirectory()
-    {
-        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\ZipException');
-        $dir = '/THIS/DIRECTORY/DOES/NOT/EXIST/';
-
-        $result = $this->file->zip('./src/','test.zip',true);
-        $this->file->unzip('test.zip',$dir,true);
-
-        $this->assertTrue( $result );
-        if($result)
-        {
-            $this->file->delete('test.zip');
-        }
-    }
 
     public function tearDown()
     {

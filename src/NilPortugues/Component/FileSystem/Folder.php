@@ -1,6 +1,8 @@
 <?php
 namespace NilPortugues\Component\FileSystem;
 
+use \NilPortugues\Component\FileSystem\Exceptions\FolderException;
+
 class Folder extends Zip implements \NilPortugues\Component\FileSystem\Interfaces\FolderInterface
 {
     //@todo:
@@ -9,16 +11,131 @@ class Folder extends Zip implements \NilPortugues\Component\FileSystem\Interface
 
     }
 
-    //@todo:
-    public function copy($filePath,$newFilePath,$overwrite=false)
+     /**
+     * Copies files from one directory to another
+     *
+     * @param $path
+     * @param $destinationPath
+     * @return bool
+     */
+    public function copy($path,$destinationPath)
     {
+        if(!file_exists($path) || !is_dir($path) )
+        {
+            throw new FolderException("Origin folder {$path} does not exist.");
+        }
 
+        if(!file_exists($destinationPath) || !is_dir($destinationPath))
+        {
+            throw new FolderException("Destination folder {$destinationPath} does not exist.");
+        }
+
+        return $this->recursiveCopy($path,$destinationPath);
     }
 
-    //@todo:
-    public function move($filePath,$newFilePath)
+    /**
+     * Recursively copy files from one directory to another.
+     *
+     * @param $path
+     * @param $destinationPath
+     * @return bool
+     */
+    protected function recursiveCopy($path,$destinationPath)
     {
+        // If source is not a directory stop processing
+        if(!is_dir($path)) return false;
 
+        // If the destination directory does not exist create it
+        if(!is_dir($destinationPath))
+        {
+            if(!mkdir($destinationPath))
+            {
+                // If the destination directory could not be created stop processing
+                return false;
+            }
+        }
+
+        // Open the source directory to read in files
+        $i = new \DirectoryIterator($path);
+        foreach($i as $f)
+        {
+            if($f->isFile())
+            {
+                copy($f->getRealPath(), $destinationPath .DIRECTORY_SEPARATOR. $f->getFilename());
+            }
+            else if(!$f->isDot() && $f->isDir())
+            {
+                $this->recursiveCopy($f->getRealPath(), $destinationPath.DIRECTORY_SEPARATOR.$f);
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Moves files from one directory to another
+     *
+     * @param string $path
+     * @param string $destinationPath
+     * @return bool
+     * @throws Exceptions\FolderException
+     */
+    public function move($path, $destinationPath)
+    {
+        if(!file_exists($path) || !is_dir($path) )
+        {
+            throw new FolderException("Origin folder {$path} does not exist.");
+        }
+
+        if(!file_exists($destinationPath) || !is_dir($destinationPath))
+        {
+            throw new FolderException("Destination folder {$destinationPath} does not exist.");
+        }
+
+        return $this->recursiveMove($path,$destinationPath);
+    }
+
+    /**
+     * Recursively move files from one directory to another
+     *
+     * @param string $path
+     * @param string $destinationPath
+     * @return bool
+     */
+    protected function recursiveMove($path, $destinationPath)
+    {
+        // If source is not a directory stop processing
+        if(!is_dir($path))
+        {
+            return false;
+        }
+
+        // If the destination directory does not exist create it
+        if(!is_dir($destinationPath))
+        {
+            if(!mkdir($destinationPath))
+            {
+                // If the destination directory could not be created stop processing
+                return false;
+            }
+        }
+
+        // Open the source directory to read in files
+        $i = new \DirectoryIterator($path);
+        foreach($i as $f)
+        {
+            if($f->isFile())
+            {
+                rename($f->getRealPath(), $destinationPath .DIRECTORY_SEPARATOR. $f->getFilename());
+            }
+            else if(!$f->isDot() && $f->isDir())
+            {
+                $this->recursiveMove($f->getRealPath(), $destinationPath.DIRECTORY_SEPARATOR.$f);
+                unlink($f->getRealPath());
+            }
+        }
+        unlink($path);
+
+        return true;
     }
 
     //@todo:
@@ -45,38 +162,45 @@ class Folder extends Zip implements \NilPortugues\Component\FileSystem\Interface
 
     }
 
-    //@todo:
+    /**
+     * @param string $path
+     * @return bool
+     * @throws Exceptions\FolderException
+     */
     public function isReadable($path)
     {
+        if (!$this->exists($path)) {
+            throw new FolderException("File {$path} does not exists.");
+        }
 
-    }
-
-    //@todo:
-    public function isWritable($path)
-    {
-
-    }
-
-    //@todo:
-    public function zip($filePath, $newFileName, $overwrite=false)
-    {
-
-
-    }
-
-    //@todo:
-    public function unzip($filePath, $newFileName, $overwrite=false)
-    {
-
+        return is_readable($path);
     }
 
     /**
      * @param string $path
      * @return bool
+     * @throws Exceptions\FolderException
+     */
+    public function isWritable($path)
+    {
+        if (!$this->exists($path)) {
+            throw new FolderException("File {$path} does not exists.");
+        }
+
+        return is_writable($path);
+    }
+
+    /**
+     * Determine if the folder exists.
+     *
+     * @param $filePath
+     * @return bool
      */
     public function exists($path)
     {
-        return file_exists($path) && is_dir($path);
+        clearstatcache();
+
+        return (is_dir($path) &&  file_exists($path));
     }
 
     /**

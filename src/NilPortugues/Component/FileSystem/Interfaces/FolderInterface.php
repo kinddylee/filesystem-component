@@ -5,11 +5,11 @@ interface FolderInterface
 {
     public function getModificationDate($path);
 
-    public function copy($filePath,$newFilePath,$overwrite=false);
+    public function copy($path,$destinationPath);
 
-    public function move($filePath,$newFilePath);
+    public function move($path,$destinationPath);
 
-    public function exists($path);
+    public function exists($path);  //OK
 
     public function create($path);
 
@@ -21,11 +21,11 @@ interface FolderInterface
 
     public function chmod($path, $mode);
 
-    public function isReadable($path);
+    public function isReadable($path);  //OK
 
-    public function isWritable($path);
+    public function isWritable($path);  //OK
 
-    public function zip($filePath, $newFileName, $overwrite=false);
+    public function zip($filePath, $newFileName, $overwrite=false);  //OK
 
-    public function unzip($filePath, $newFileName, $overwrite=false);
+    public function unzip($filePath, $newFileName, $overwrite=false);  //OK
 }

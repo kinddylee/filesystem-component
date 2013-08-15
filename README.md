@@ -28,7 +28,7 @@ All actions available in this component have been split into the 3 possible enti
 
 ### Usage:
 ```
-$file = new NilPortugues\Component\FileSystem\File();
+$file = new \NilPortugues\Component\FileSystem\File();
 ```
 
 ## 2. Folder
@@ -49,7 +49,7 @@ $file = new NilPortugues\Component\FileSystem\File();
 
 ### Usage:
 ```
-$folder = new NilPortugues\Component\FileSystem\Folder();
+$folder = new \NilPortugues\Component\FileSystem\Folder();
 ```
 
 ## 3. FileSystem
@@ -57,5 +57,5 @@ $folder = new NilPortugues\Component\FileSystem\Folder();
 
 ### Usage:
 ```
-$folder = new NilPortugues\Component\FileSystem\FileSystem();
+$folder = new \NilPortugues\Component\FileSystem\FileSystem();
 ```
