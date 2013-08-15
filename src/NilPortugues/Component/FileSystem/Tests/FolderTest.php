@@ -138,7 +138,7 @@ class FolderTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue( $result );
         if($result)
         {
-            $this->folder->delete('test.zip');
+            unlink('test.zip');
         }
     }
 
@@ -165,7 +165,7 @@ class FolderTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue( $result );
         if($result)
         {
-            $this->folder->delete('test.zip');
+            unlink('test.zip');
         }
 
     }
@@ -181,7 +181,7 @@ class FolderTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue( $result );
         if($result)
         {
-            $this->folder->delete('test.zip');
+            unlink('test.zip');
         }
     }
 
