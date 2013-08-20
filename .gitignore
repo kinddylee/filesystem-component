@@ -2,3 +2,8 @@
 vendor/
 bin/
 tmp/
+.DS_Store
+bin/
+tmp/
+composer.lock
+*.php~
