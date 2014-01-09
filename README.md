@@ -11,65 +11,70 @@ All actions available in this component have been split into the 2 possible enti
 ### 2.1. File class
 
 #### Methods available:
-- isReadable($filePath);
-- isWritable($filePath);
-- getExtension($filePath);
-- getModificationDate($filePath);
-- exists($filePath);
-- read($filePath);
-- write($filePath, $data, $mode = null);
-- append($filePath, $data);
-- chmod($filePath, $mode);
-- delete($filePath);
-- rename($filePath,$newFileName,$overwrite=false);
-- copy($filePath,$newFilePath,$overwrite=false);
-- move($filePath,$destinationFolder,$overwrite=false);
-- touch($filePath,$time='',$accessTime='');
-- gzip($filePath, $newFileName, $overwrite=false, $param="1");
-- gunzip ($filePath, $destinationPath,$overwrite=false);
-- zip($filePath, $newFileName, $overwrite=false);
-- unzip($filePath, $destinationPath, $overwrite=false)
-- softSymLink($original, $alias);
-- hardSymLink($original, $alias);
-- isLink($path);
+- File::isReadable($filePath);
+- File::isWritable($filePath);
+- File::getExtension($filePath);
+- File::getModificationDate($filePath);
+- File::exists($filePath);
+- File::read($filePath);
+- File::write($filePath, $data, $mode = null);
+- File::append($filePath, $data);
+- File::chmod($filePath, $mode);
+- File::delete($filePath);
+- File::rename($filePath,$newFileName,$overwrite=false);
+- File::copy($filePath,$newFilePath,$overwrite=false);
+- File::move($filePath,$destinationFolder,$overwrite=false);
+- File::touch($filePath,$time='',$accessTime='');
+- File::gzip($filePath, $newFileName, $overwrite=false, $param="1");
+- File::gunzip ($filePath, $destinationPath,$overwrite=false);
+- File::zip($filePath, $newFileName, $overwrite=false);
+- File::unzip($filePath, $destinationPath, $overwrite=false)
+- File::softSymLink($original, $alias);
+- File::hardSymLink($original, $alias);
+- File::isLink($path);
+- File::mimeType($path);
+- File::userOwner($path);
+- File::groupOwner($path);
 
 #### Usage:
 ```
-$file = new \NilPortugues\Component\FileSystem\File();
+<?php
+use \NilPortugues\Component\FileSystem\File as File;
 
-$file->copy('hello/world.txt','goodbye/moon.txt');
-$file->exists('goodbye/moon.txt');
+File::copy('hello/world.txt','goodbye/moon.txt');
+File::exists('goodbye/moon.txt');
 
+?>
 ```
 
 ### 2.2. Folder class
 #### Methods available:
-- isReadable($path);
-- isWritable($path);
-- getModificationDate($path);
-- copy($filePath,$newFilePath,$overwrite=false);
-- move($filePath,$newFilePath);
-- exists($path);
-- create($path);
-- delete($path);
-- rename($path,$newName);
-- touch($path,$time='',$accessTime='');
-- chmod($path, $mode);
-- zip($filePath, $newFileName, $overwrite=false);
-- unzip($filePath, $newFileName, $overwrite=false);
-- softSymLink($original, $alias);
-- hardSymLink($original, $alias);
-- isLink($path);
-- softSymLink($original, $alias);
-- hardSymLink($original, $alias);
-- isLink($path);
+- Folder::isReadable($path);
+- Folder::isWritable($path);
+- Folder::getModificationDate($path);
+- Folder::copy($filePath,$newFilePath,$overwrite=false);
+- Folder::move($filePath,$newFilePath);
+- Folder::exists($path);
+- Folder::create($path);
+- Folder::delete($path);
+- Folder::rename($path,$newName);
+- Folder::touch($path,$time='',$accessTime='');
+- Folder::chmod($path, $mode);
+- Folder::zip($filePath, $newFileName, $overwrite=false);
+- Folder::unzip($filePath, $newFileName, $overwrite=false);
+- Folder::softSymLink($original, $alias);
+- Folder::hardSymLink($original, $alias);
+- Folder::isLink($path);
+- Folder::softSymLink($original, $alias);
+- Folder::hardSymLink($original, $alias);
+- Folder::isLink($path);
 
 #### Usage:
 ```
-$folder = new \NilPortugues\Component\FileSystem\Folder();
+use \NilPortugues\Component\FileSystem\Folder as Folder;
 
-$folder->softSymLink('path/to/src','source');
-$folder->isLink('source');
+Folder::softSymLink('path/to/src','source');
+Folder::isLink('source');
 ```
 
 
@@ -92,7 +97,4 @@ While the current class is stable and usable, new features will be added eventua
     - Largest file in the directory.
     - List all directory files sorted by file size.
     - Last modified file  in the directory.
-    - List all directory files sorted by modification date.
-    
-- Make all methods static.
-
+    - List all directory files sorted by modification date.    

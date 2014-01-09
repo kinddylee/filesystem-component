@@ -13,7 +13,7 @@ interface ZipInterface
      * @throws FileReadException
      * @throws FileWriteException
      */
-    public function createZip($sSourceFile, $sDestinationFile=null);
+    public static function createZip($sSourceFile, $sDestinationFile=null);
 
     /**
      * Get the default destination file for this source file
@@ -21,5 +21,5 @@ interface ZipInterface
      * @param  string $sSourceFile Path to the source file
      * @return string Path to the default output file for this source file
      */
-    public function getZipDestinationFilename($sSourceFile);
+    public static function getZipDestinationFilename($sSourceFile);
 }

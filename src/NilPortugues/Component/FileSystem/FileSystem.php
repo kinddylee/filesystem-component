@@ -19,7 +19,7 @@ abstract class FileSystem extends Zip implements FileSystemInterface
      * @return bool
      * @throws Exceptions\FileSystemException
      */
-    public function softSymLink($original, $alias)
+    public static function softSymLink($original, $alias)
     {
         if(!file_exists($original))
         {
@@ -40,7 +40,7 @@ abstract class FileSystem extends Zip implements FileSystemInterface
      * @return bool
      * @throws Exceptions\FileSystemException
      */
-    public function hardSymLink($original, $alias)
+    public static function hardSymLink($original, $alias)
     {
         if(!file_exists($original))
         {
@@ -61,9 +61,9 @@ abstract class FileSystem extends Zip implements FileSystemInterface
      * @return bool
      * @throws FileSystemException
      */
-    public function isLink($path)
+    public static function isLink($path)
     {
-        if (!$this->exists($path))
+        if (!file_exists($path))
         {
             throw new FileSystemException("{$path} does not exist.");
         }

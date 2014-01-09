@@ -20,11 +20,11 @@ class File extends FileSystem implements \NilPortugues\Component\FileSystem\Inte
      * @return bool
      * @throws Exceptions\FileSystemException
      */
-    public function copy($filePath,$newFilePath,$overwrite=false)
+    public static function copy($filePath,$newFilePath,$overwrite=false)
     {
         $pathWithoutFileName = pathinfo($newFilePath,PATHINFO_DIRNAME);
 
-        if (!$this->exists($filePath)) {
+        if (!self::exists($filePath)) {
             throw new FileSystemException("File {$filePath} does not exist.");
         }
 
@@ -32,7 +32,7 @@ class File extends FileSystem implements \NilPortugues\Component\FileSystem\Inte
             throw new FileSystemException("Destination folder {$pathWithoutFileName} does not exist.");
         }
 
-        if ( $overwrite==false && $this->exists($newFilePath) )
+        if ( $overwrite==false && self::exists($newFilePath) )
         {
 
             throw new FileSystemException("Cannot rename file {$filePath} to {$newFilePath}. A file with he same name already exists at {$pathWithoutFileName}.");
@@ -48,9 +48,9 @@ class File extends FileSystem implements \NilPortugues\Component\FileSystem\Inte
      * @return bool
      * @throws Exceptions\FileSystemException
      */
-    public function move($filePath,$destinationFolder,$overwrite=false)
+    public static function move($filePath,$destinationFolder,$overwrite=false)
     {
-        if (!$this->exists($filePath)) {
+        if (!self::exists($filePath)) {
             throw new FileSystemException("File {$filePath} does not exist.");
         }
 
@@ -59,7 +59,7 @@ class File extends FileSystem implements \NilPortugues\Component\FileSystem\Inte
         }
 
         $newFilePath = $destinationFolder.DIRECTORY_SEPARATOR.basename($filePath);
-        if ( $overwrite==false && $this->exists($newFilePath) )
+        if ( $overwrite==false && self::exists($newFilePath) )
         {
 
             throw new FileSystemException("Cannot rename file {$filePath} to {$newFilePath}. A file with he same name already exists at {$destinationFolder}.");
@@ -72,9 +72,9 @@ class File extends FileSystem implements \NilPortugues\Component\FileSystem\Inte
      * @param $filePath
      * @return bool|string
      */
-    public function getExtension($filePath)
+    public static function getExtension($filePath)
     {
-        if ($this->exists($filePath)) {
+        if (self::exists($filePath)) {
             $ext = pathinfo($filePath, PATHINFO_EXTENSION);
 
             return strtolower($ext);
@@ -89,10 +89,10 @@ class File extends FileSystem implements \NilPortugues\Component\FileSystem\Inte
      * @param  string $filename
      * @return bool|int
      */
-    public function getModificationDate($filePath)
+    public static function getModificationDate($filePath)
     {
         clearstatcache();
-        if ($this->exists($filePath)) {
+        if (self::exists($filePath)) {
             return filemtime($filePath);
         }
 
@@ -106,9 +106,9 @@ class File extends FileSystem implements \NilPortugues\Component\FileSystem\Inte
      * @return bool
      * @throws Exceptions\FileSystemException
      */
-    public function touch($filePath,$time='',$accessTime='')
+    public static function touch($filePath,$time='',$accessTime='')
     {
-        if (!$this->isWritable($filePath)) {
+        if (!self::isWritable($filePath)) {
             throw new FileSystemException("File {$filePath} is not writable.");
         }
 
@@ -132,7 +132,7 @@ class File extends FileSystem implements \NilPortugues\Component\FileSystem\Inte
      * @param $filePath
      * @return bool
      */
-    public function exists($filePath)
+    public static function exists($filePath)
     {
         clearstatcache();
 
@@ -146,9 +146,9 @@ class File extends FileSystem implements \NilPortugues\Component\FileSystem\Inte
      * @return bool
      * @throws Exceptions\FileSystemException
      */
-    public function isReadable($filePath)
+    public static function isReadable($filePath)
     {
-        if (!$this->exists($filePath)) {
+        if (!self::exists($filePath)) {
             throw new FileSystemException("File {$filePath} does not exists.");
         }
 
@@ -160,9 +160,9 @@ class File extends FileSystem implements \NilPortugues\Component\FileSystem\Inte
      * @return bool
      * @throws Exceptions\FileSystemException
      */
-    public function isWritable($filePath)
+    public static function isWritable($filePath)
     {
-        if (!$this->exists($filePath)) {
+        if (!self::exists($filePath)) {
             throw new FileSystemException("File {$filePath} does not exists.");
         }
 
@@ -176,13 +176,13 @@ class File extends FileSystem implements \NilPortugues\Component\FileSystem\Inte
      * @return string
      * @throws Exceptions\FileSystemException
      */
-    public function read($filePath)
+    public static function read($filePath)
     {
-        if (!$this->exists($filePath)) {
+        if (!self::exists($filePath)) {
             throw new FileSystemException("File {$filePath} does not exist.");
         }
 
-        if ( $this->isReadable($filePath) ) {
+        if ( self::isReadable($filePath) ) {
             return file_get_contents($filePath);
         } else {
             throw new FileSystemException("File {$filePath} is not readable.");
@@ -199,7 +199,7 @@ class File extends FileSystem implements \NilPortugues\Component\FileSystem\Inte
      * @return int    The number of bytes (not chars!) that were written to the file, or FALSE on failure.
      * @throws Exceptions\FileSystemException
      */
-    public function write($filePath, $data, $mode = 0644)
+    public static function write($filePath, $data, $mode = 0644)
     {
         $dir = pathinfo($filePath,PATHINFO_DIRNAME);
         if(!file_exists($dir) && !is_dir($dir))
@@ -213,13 +213,13 @@ class File extends FileSystem implements \NilPortugues\Component\FileSystem\Inte
         }
         else
         {
-            if (!$this->isWritable($filePath) || !is_file($filePath)) {
+            if (!self::isWritable($filePath) || !is_file($filePath)) {
                 throw new FileSystemException("File {$filePath} is not writable.");
             }
             $res = file_put_contents($filePath, $data);
         }
 
-        $this->chmod($filePath, $mode);
+        self::chmod($filePath, $mode);
 
         return $res;
     }
@@ -232,9 +232,9 @@ class File extends FileSystem implements \NilPortugues\Component\FileSystem\Inte
      * @return integer The number of bytes that were written to the file, or FALSE on failure.
      * @throws Exceptions\FileSystemException
      */
-    public function append($filePath, $data)
+    public static function append($filePath, $data)
     {
-        if (!$this->isWritable($filePath) || !is_file($filePath)) {
+        if (!self::isWritable($filePath) || !is_file($filePath)) {
             throw new FileSystemException("File {$filePath} is not writable.");
         }
 
@@ -249,9 +249,9 @@ class File extends FileSystem implements \NilPortugues\Component\FileSystem\Inte
      * @return boolean TRUE on success or FALSE on failure.
      * @throws Exceptions\FileSystemException
      */
-    public function chmod($filePath, $mode)
+    public static function chmod($filePath, $mode)
     {
-        if (!$this->exists($filePath)) {
+        if (!self::exists($filePath)) {
             throw new FileSystemException("File {$filePath} does not exist.");
         }
 
@@ -265,9 +265,9 @@ class File extends FileSystem implements \NilPortugues\Component\FileSystem\Inte
      * @return bool
      * @throws Exceptions\FileSystemException
      */
-    public function delete($filePath)
+    public static function delete($filePath)
     {
-        if ( $this->exists($filePath) ) {
+        if ( self::exists($filePath) ) {
             return unlink($filePath);
         } else {
             throw new FileSystemException("File {$filePath} does not exist.");
@@ -283,9 +283,9 @@ class File extends FileSystem implements \NilPortugues\Component\FileSystem\Inte
      * @return bool
      * @throws Exceptions\FileSystemException
      */
-    public function rename($filePath,$newFileName,$overwrite=false)
+    public static function rename($filePath,$newFileName,$overwrite=false)
     {
-        if (!$this->exists($filePath)) {
+        if (!self::exists($filePath)) {
             throw new FileSystemException("File {$filePath} does not exist.");
         }
 
@@ -296,7 +296,7 @@ class File extends FileSystem implements \NilPortugues\Component\FileSystem\Inte
         $pathWithoutFileName = pathinfo($filePath,PATHINFO_DIRNAME);
         $newFilePath = $pathWithoutFileName.DIRECTORY_SEPARATOR.$newFileName;
 
-        if ( $overwrite==false && $this->exists($newFilePath) ) {
+        if ( $overwrite==false && self::exists($newFilePath) ) {
             throw new FileSystemException("Cannot rename file {$filePath} to {$newFileName}. A file with he same name already exists at {$pathWithoutFileName}.");
         }
 
@@ -314,13 +314,13 @@ class File extends FileSystem implements \NilPortugues\Component\FileSystem\Inte
      * @return bool
      * @throws Exceptions\FileSystemException
      */
-    public function gzip($filePath, $newFileName, $overwrite=false, $param="1")
+    public static function gzip($filePath, $newFileName, $overwrite=false, $param="1")
     {
-        if (!$this->exists($filePath)) {
+        if (!self::exists($filePath)) {
             throw new FileSystemException("File {$filePath} does not exist.");
         }
 
-        if ($overwrite==false && $this->exists($newFileName)) {
+        if ($overwrite==false && self::exists($newFileName)) {
             throw new FileSystemException("File {$newFileName} cannot be created because it already exists.");
         }
 
@@ -353,13 +353,13 @@ class File extends FileSystem implements \NilPortugues\Component\FileSystem\Inte
      * @return bool
      * @throws Exceptions\FileSystemException
      */
-    public function gunzip($filePath,$newFileName,$overwrite=false)
+    public static function gunzip($filePath,$newFileName,$overwrite=false)
     {
-        if (!$this->exists($filePath)) {
+        if (!self::exists($filePath)) {
             throw new FileSystemException("File {$filePath} does not exist.");
         }
 
-        if ($overwrite==false && $this->exists($newFileName)) {
+        if ($overwrite==false && self::exists($newFileName)) {
             throw new FileSystemException("File {$newFileName} cannot be created because it already exists.");
         }
 
@@ -381,9 +381,9 @@ class File extends FileSystem implements \NilPortugues\Component\FileSystem\Inte
     }
 
 
-    public function groupOwner($filePath)
+    public static function groupOwner($filePath)
     {
-        if (!$this->exists($filePath)) {
+        if (!self::exists($filePath)) {
             throw new FileSystemException("File {$filePath} does not exist.");
         }
 
@@ -400,9 +400,9 @@ class File extends FileSystem implements \NilPortugues\Component\FileSystem\Inte
        
     }
 
-    public function userOwner($filePath)
+    public static function userOwner($filePath)
     {
-        if (!$this->exists($filePath)) {
+        if (!self::exists($filePath)) {
             throw new FileSystemException("File {$filePath} does not exist.");
         }
 
@@ -420,9 +420,9 @@ class File extends FileSystem implements \NilPortugues\Component\FileSystem\Inte
     }
 
 
-    public function mimeType($filePath)
+    public static function mimeType($filePath)
     {
-        if (!$this->exists($filePath)) {
+        if (!self::exists($filePath)) {
             throw new FileSystemException("File {$filePath} does not exist.");
         }
         $finfo = finfo_open(FILEINFO_MIME_TYPE);

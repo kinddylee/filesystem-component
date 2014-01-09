@@ -18,10 +18,10 @@ class Folder extends FileSystem implements \NilPortugues\Component\FileSystem\In
      * @param  string $filename
      * @return bool|int
      */
-    public function getModificationDate($path)
+    public static function getModificationDate($path)
     {
         clearstatcache();
-        if ($this->exists($path)) {
+        if (self::exists($path)) {
             return filemtime($path);
         }
 
@@ -35,7 +35,7 @@ class Folder extends FileSystem implements \NilPortugues\Component\FileSystem\In
      * @param $destinationPath
      * @return bool
      */
-    public function copy($path,$destinationPath)
+    public static function copy($path,$destinationPath)
     {
         if(realpath($path) == realpath($destinationPath))
         {
@@ -52,7 +52,7 @@ class Folder extends FileSystem implements \NilPortugues\Component\FileSystem\In
             throw new FileSystemException("Destination folder {$destinationPath} does not exist.");
         }
 
-        return $this->recursiveCopy($path,$destinationPath);
+        return self::recursiveCopy($path,$destinationPath);
     }
 
     /**
@@ -87,7 +87,7 @@ class Folder extends FileSystem implements \NilPortugues\Component\FileSystem\In
             }
             else if(!$f->isDot() && $f->isDir())
             {
-                $this->recursiveCopy($f->getRealPath(), $destinationPath.DIRECTORY_SEPARATOR.$f);
+                self::recursiveCopy($f->getRealPath(), $destinationPath.DIRECTORY_SEPARATOR.$f);
             }
         }
         return true;
@@ -101,7 +101,7 @@ class Folder extends FileSystem implements \NilPortugues\Component\FileSystem\In
      * @return bool
      * @throws Exceptions\FileSystemException
      */
-    public function move($path, $destinationPath)
+    public static function move($path, $destinationPath)
     {
         if(realpath($path) == realpath($destinationPath))
         {
@@ -118,7 +118,7 @@ class Folder extends FileSystem implements \NilPortugues\Component\FileSystem\In
             throw new FileSystemException("Destination folder {$destinationPath} does not exist.");
         }
 
-        return $this->recursiveMove($path,$destinationPath);
+        return self::recursiveMove($path,$destinationPath);
     }
 
     /**
@@ -158,7 +158,7 @@ class Folder extends FileSystem implements \NilPortugues\Component\FileSystem\In
             }
             else if(!$f->isDot() && $f->isDir())
             {
-                $this->recursiveMove($f->getRealPath(), $destinationPath.DIRECTORY_SEPARATOR.$f);
+                self::recursiveMove($f->getRealPath(), $destinationPath.DIRECTORY_SEPARATOR.$f);
 
                 if(is_file($f->getRealPath()) || is_link($f->getRealPath()))
                 {
@@ -183,11 +183,11 @@ class Folder extends FileSystem implements \NilPortugues\Component\FileSystem\In
      * @return bool
      * @throws Exceptions\FileSystemException
      */
-    public function delete($path)
+    public static function delete($path)
     {
         if(file_exists($path) && is_dir($path) )
         {
-            return $this->recursivelyDelete($path);
+            return self::recursivelyDelete($path);
         }
         throw new FileSystemException("Folder {$path} does not exist.");
 
@@ -216,11 +216,11 @@ class Folder extends FileSystem implements \NilPortugues\Component\FileSystem\In
         {
             if ($item == '.' || $item == '..') continue;
 
-            if (!$this->recursivelyDelete($path . DIRECTORY_SEPARATOR . $item))
+            if (!self::recursivelyDelete($path . DIRECTORY_SEPARATOR . $item))
             {
                 chmod($path . DIRECTORY_SEPARATOR . $item, 0777);
 
-                if (!$this->recursivelyDelete($path . DIRECTORY_SEPARATOR . $item))
+                if (!self::recursivelyDelete($path . DIRECTORY_SEPARATOR . $item))
                 {
                     return false;
                 }
@@ -237,18 +237,18 @@ class Folder extends FileSystem implements \NilPortugues\Component\FileSystem\In
      * @return bool
      * @throws Exceptions\FileSystemException
      */
-    public function rename($path,$newName)
+    public static function rename($path,$newName)
     {
         if(realpath($path) == realpath($newName))
         {
             throw new FileSystemException("Current folder name and new name are the same.");
         }
 
-        if (!$this->exists($path)) {
+        if (!self::exists($path)) {
             throw new FileSystemException("Folder {$path} does not exist.");
         }
 
-        if ($this->exists($newName)) {
+        if (self::exists($newName)) {
             throw new FileSystemException("Folder {$newName} already exists. Folder {$path} cannot renamed.");
         }
 
@@ -266,9 +266,9 @@ class Folder extends FileSystem implements \NilPortugues\Component\FileSystem\In
      * @return bool
      * @throws Exceptions\FileSystemException
      */
-    public function touch($path,$time='',$accessTime='')
+    public static function touch($path,$time='',$accessTime='')
     {
-        if (!$this->isWritable($path)) {
+        if (!self::isWritable($path)) {
             throw new FileSystemException("Folder {$path} is not writable.");
         }
 
@@ -294,9 +294,9 @@ class Folder extends FileSystem implements \NilPortugues\Component\FileSystem\In
      * @return boolean TRUE on success or FALSE on failure.
      * @throws Exceptions\FileException
      */
-    public function chmod($path, $mode)
+    public static function chmod($path, $mode)
     {
-        if (!$this->exists($path)) {
+        if (!self::exists($path)) {
             throw new FileSystemException("File {$path} does not exist.");
         }
 
@@ -307,9 +307,9 @@ class Folder extends FileSystem implements \NilPortugues\Component\FileSystem\In
      * @return bool
      * @throws Exceptions\FileSystemException
      */
-    public function isReadable($path)
+    public static function isReadable($path)
     {
-        if (!$this->exists($path)) {
+        if (!self::exists($path)) {
             throw new FileSystemException("File {$path} does not exists.");
         }
 
@@ -321,9 +321,9 @@ class Folder extends FileSystem implements \NilPortugues\Component\FileSystem\In
      * @return bool
      * @throws Exceptions\FileSystemException
      */
-    public function isWritable($path)
+    public static function isWritable($path)
     {
-        if (!$this->exists($path)) {
+        if (!self::exists($path)) {
             throw new FileSystemException("File {$path} does not exists.");
         }
 
@@ -336,7 +336,7 @@ class Folder extends FileSystem implements \NilPortugues\Component\FileSystem\In
      * @param $filePath
      * @return bool
      */
-    public function exists($path)
+    public static function exists($path)
     {
         clearstatcache();
 
@@ -348,14 +348,14 @@ class Folder extends FileSystem implements \NilPortugues\Component\FileSystem\In
      * @return bool
      * @throws Exceptions\FileSystemException
      */
-    public function create($path)
+    public static function create($path)
     {
         if(file_exists($path) && is_file($path))
         {
             throw new \NilPortugues\Component\FileSystem\Exceptions\FileSystemException("Cannot create the {$path} folder because a file with the same name exists.");
         }
 
-        if($this->exists($path))
+        if(self::exists($path))
         {
             throw new \NilPortugues\Component\FileSystem\Exceptions\FileSystemException("Cannot create the {$path} folder because it already exists.");
         }

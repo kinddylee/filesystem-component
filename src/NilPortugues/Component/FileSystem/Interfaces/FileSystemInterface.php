@@ -10,9 +10,9 @@ namespace NilPortugues\Component\FileSystem\Interfaces;
 
 interface FileSystemInterface
 {
-    public function softSymLink($original, $alias);
+    public static function softSymLink($original, $alias);
 
-    public function hardSymLink($original, $alias);
+    public static function hardSymLink($original, $alias);
 
-    public function isLink($path);
+    public static function isLink($path);
 }

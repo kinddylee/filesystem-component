@@ -7,6 +7,7 @@
  */
 
 namespace NilPortugues\Component\FileSystem;
+use \NilPortugues\Component\FileSystem\Folder as Folder;
 
 abstract class Zip
 {
@@ -17,7 +18,7 @@ abstract class Zip
      * @return bool
      * @throws Exceptions\ZipException
      */
-    public function zip($filePath, $newFileName, $overwrite=false)
+    public static function zip($filePath, $newFileName, $overwrite=false)
     {
         $filePath = str_replace('\\', '/', $filePath);
 
@@ -118,7 +119,7 @@ abstract class Zip
      * @return bool
      * @throws Exceptions\ZipException
      */
-    public function unzip($filePath, $destinationPath, $overwrite=false)
+    public static function unzip($filePath, $destinationPath, $overwrite=false)
     {
         $destinationPath = $destinationPath.DIRECTORY_SEPARATOR;
 
@@ -143,14 +144,14 @@ abstract class Zip
         if( is_resource($open) )
         {
             //create the Folder object because we'll be using it a couple of times.
-            $folder = new \NilPortugues\Component\FileSystem\Folder();
+
 
             //If output directory does not exist, try creating it.
             if(!file_exists($destinationPath))
             {
                 try
                 {
-                    $folder->create($destinationPath);
+                    Folder::create($destinationPath);
                 }
                 catch(\NilPortugues\Component\FileSystem\Exceptions\FolderException $e)
                 {

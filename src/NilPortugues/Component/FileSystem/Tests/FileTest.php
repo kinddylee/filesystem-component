@@ -7,6 +7,7 @@
  */
 
 namespace NilPortugues\Component\FileSystem\Test;
+use \NilPortugues\Component\FileSystem\File as File;
 
 class FileTest extends \PHPUnit_Framework_TestCase
 {
@@ -24,14 +25,14 @@ class FileTest extends \PHPUnit_Framework_TestCase
         file_put_contents($this->filename,rand(1,$this->fileData));
         $this->filename = realpath($this->filename);
 
-        $this->file = new \NilPortugues\Component\FileSystem\File();
+        $this->file = new File();
     }
 
     public function testMoveExistingFile()
     {
         $file = $this->filename;
-        $result1 = $this->file->move($file,"../",true);
-        $result2 = $this->file->exists('../test.txt');
+        $result1 = File::move($file,"../",true);
+        $result2 = File::exists('../test.txt');
 
         $this->assertTrue($result1);
         $this->assertTrue($result2);
@@ -41,21 +42,21 @@ class FileTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
-        $this->file->move($file,"../",true);
+        File::move($file,"../",true);
     }
 
     public function testCopyExistingFile()
     {
         $file = $this->filename;
-        $result1 = $this->file->copy($file,$file.'.copy.txt',true);
-        $result2 = $this->file->exists($file.'.copy.txt');
+        $result1 = File::copy($file,$file.'.copy.txt',true);
+        $result2 = File::exists($file.'.copy.txt');
 
         $this->assertTrue($result1);
         $this->assertTrue($result2);
 
         if($result2)
         {
-            $this->file->delete($file.'.copy.txt');
+            File::delete($file.'.copy.txt');
         }
     }
 
@@ -63,7 +64,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
-        $this->file->copy($file,"../");
+        File::copy($file,"../");
     }
 
 
@@ -72,21 +73,21 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $file = $this->filename;
         $path = dirname("");
 
-        $result = $this->file->getExtension($path.DIRECTORY_SEPARATOR.$file);
+        $result = File::getExtension($path.DIRECTORY_SEPARATOR.$file);
         $this->assertEquals($this->extension,$result);
     }
 
     public function testGetExtensionNonExistentFile()
     {
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
-        $result = $this->file->getExtension($file);
+        $result = File::getExtension($file);
         $this->assertFalse($result);
     }
 
     public function testGetModificationDateExistingFile()
     {
         $file = $this->filename;
-        $result = $this->file->getModificationDate($file);
+        $result = File::getModificationDate($file);
 
         $this->assertNotEmpty($result);
     }
@@ -94,7 +95,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
     public function testGetModificationDateNonExistentFile()
     {
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
-        $result = $this->file->getModificationDate($file);
+        $result = File::getModificationDate($file);
 
         $this->assertFalse($result);
     }
@@ -102,11 +103,11 @@ class FileTest extends \PHPUnit_Framework_TestCase
     public function testChangeModificationDateExistingFile()
     {
         $file = $this->filename;
-        $original = $this->file->getModificationDate($file);
+        $original = File::getModificationDate($file);
 
         $time = time()-3600;
-        $this->file->touch($file,$time);
-        $result = $this->file->getModificationDate($file);
+        File::touch($file,$time);
+        $result = File::getModificationDate($file);
 
         $this->assertEquals($original-3600,$result);
     }
@@ -115,45 +116,45 @@ class FileTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
-        $this->file->touch($file,time());
+        File::touch($file,time());
     }
 
     public function testFileExistsExistingFile()
     {
         $file = $this->filename;
-        $this->assertTrue($this->file->exists($file));
+        $this->assertTrue(File::exists($file));
     }
 
     public function testFileExistsNonExistentFile()
     {
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
-        $this->assertFalse($this->file->exists($file));
+        $this->assertFalse(File::exists($file));
     }
 
     public function testFileIsReadableExistingFile()
     {
         $file = $this->filename;
-        $this->assertTrue($this->file->isWritable($file));
+        $this->assertTrue(File::isWritable($file));
     }
 
     public function testFileIsReadableNonExistentFile()
     {
         $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
-        $this->file->isWritable($file);
+        File::isWritable($file);
     }
 
     public function testFileReadExistingFile()
     {
         $file = $this->filename;
-        $this->assertNotEmpty($this->file->read($file));
+        $this->assertNotEmpty(File::read($file));
     }
 
     public function testFileReadNonExistentFile()
     {
         $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
-        $this->file->read($file);
+        File::read($file);
     }
 
     public function testFileWriteFileIsWritable()
@@ -161,7 +162,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $file = $this->filename;
         $data = 'Lorem ipsum blah blah blah';
 
-        $this->assertNotEquals($this->file->write($file, $data, '0755'),false);
+        $this->assertNotEquals(File::write($file, $data, '0755'),false);
     }
 
     public function testFileWriteFileNotWritable()
@@ -170,13 +171,13 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
         $data = 'Lorem ipsum blah blah blah';
 
-        $this->file->write($file, $data, '0755');
+        File::write($file, $data, '0755');
     }
 
     public function testFileAppendExistingFile()
     {
         $file = $this->filename;
-        $this->assertNotEquals($this->file->append($file, 'new data'),false);
+        $this->assertNotEquals(File::append($file, 'new data'),false);
     }
 
     public function testFileAppendNonExistentFile()
@@ -184,7 +185,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
 
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
-        $this->file->append($file, 'new data');
+        File::append($file, 'new data');
     }
 
     public function testFileChmodNonExistentFile()
@@ -192,13 +193,13 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
 
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
-        $this->file->chmod($file, '0755');
+        File::chmod($file, '0755');
     }
 
     public function testFileChmodExistingFile()
     {
         $file = $this->filename;
-        $this->assertTrue($this->file->chmod($file, '0755'));
+        $this->assertTrue(File::chmod($file, '0755'));
     }
 
     public function testFileDeleteNonExistentFile()
@@ -206,13 +207,13 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
 
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
-        $this->file->delete($file);
+        File::delete($file);
     }
 
     public function testFileDeleteExistingFile()
     {
         file_put_contents('temp.txt','');
-        $this->assertTrue($this->file->delete( 'temp.txt' ));
+        $this->assertTrue(File::delete( 'temp.txt' ));
     }
 
     public function testFileRenameValidNewFilename()
@@ -220,12 +221,12 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $file = $this->filename;
         $overwrite=false;
 
-        $result = $this->file->rename($file,'ok.txt',$overwrite);
+        $result = File::rename($file,'ok.txt',$overwrite);
 
         $this->assertTrue($result);
         if($result)
         {
-            $this->file->delete('ok.txt');
+            File::delete('ok.txt');
         }
     }
 
@@ -235,7 +236,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $overwrite=false;
 
         $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
-        $this->file->rename($file,'ok/a.txt',$overwrite);
+        File::rename($file,'ok/a.txt',$overwrite);
     }
 
     public function testFileRenameNonExistentFile()
@@ -243,51 +244,51 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
 
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
-        $this->file->rename($file,'newName.txt',false);
+        File::rename($file,'newName.txt',false);
     }
 
     public function testFileRenameExistingFileNoOverwrite()
     {
         $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
-        $this->file->rename($file,'newName.txt',false);
+        File::rename($file,'newName.txt',false);
     }
 
     public function testFileRenameExistingFileWithOverwrite()
     {
         file_put_contents('./temp.txt','');
         file_put_contents('./temp2.txt','');
-        $this->file->rename('./temp.txt','temp2.txt',true);
+        File::rename('./temp.txt','temp2.txt',true);
 
-        $this->assertFalse($this->file->exists('./temp.txt'));
-        $this->assertTrue($this->file->exists('./temp2.txt'));
+        $this->assertFalse(File::exists('./temp.txt'));
+        $this->assertTrue(File::exists('./temp2.txt'));
 
-        $this->file->delete('./temp2.txt');
-        $this->assertFalse($this->file->exists('./temp2.txt'));
+        File::delete('./temp2.txt');
+        $this->assertFalse(File::exists('./temp2.txt'));
     }
 
     public function testFileRenameExistingFileSameName()
     {
         file_put_contents('./temp.txt','');
-        $this->file->rename('./temp.txt','temp.txt',true);
+        File::rename('./temp.txt','temp.txt',true);
 
-        $this->assertTrue($this->file->exists('./temp.txt'));
-        $this->file->delete('./temp.txt');
-        $this->assertFalse($this->file->exists('./temp.txt'));
+        $this->assertTrue(File::exists('./temp.txt'));
+        File::delete('./temp.txt');
+        $this->assertFalse(File::exists('./temp.txt'));
     }
 
     public function testGZipExistingFile()
     {
         $file = $this->filename;
 
-        $this->file->gzip($file,$file.'.gz',true);
+        File::gzip($file,$file.'.gz',true);
 
-        $result = $this->file->exists($file.'.gz');
+        $result = File::exists($file.'.gz');
         $this->assertTrue( $result );
 
         if($result)
         {
-            $this->file->delete($file.'.gz');
+            File::delete($file.'.gz');
         }
     }
 
@@ -295,21 +296,21 @@ class FileTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
-        $this->file->gzip($file,$file.'.gz',true);
+        File::gzip($file,$file.'.gz',true);
     }
 
     public function testGunzipExistingFile()
     {
         $file = $this->filename;
-        $this->file->gzip($file,$file.'.gz',true);
-        $this->file->gunzip($file.'.gz',$file.'.extracted.txt',true);
+        File::gzip($file,$file.'.gz',true);
+        File::gunzip($file.'.gz',$file.'.extracted.txt',true);
 
-        $result = $this->file->gunzip($file.'.gz',$file.'.extracted.txt',true);
+        $result = File::gunzip($file.'.gz',$file.'.extracted.txt',true);
         $this->assertTrue( $result );
         if($result)
         {
-            $this->file->delete($file.'.gz');
-            $this->file->delete($file.'.extracted.txt');
+            File::delete($file.'.gz');
+            File::delete($file.'.extracted.txt');
         }
     }
 
@@ -318,19 +319,19 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
 
-        $this->file->gunzip($file.'.gz',$file.'.extracted.txt',true);
+        File::gunzip($file.'.gz',$file.'.extracted.txt',true);
     }
 
     public function testZipExistingFile()
     {
         file_put_contents('test.txt','');
         $file = 'test.txt';
-        $result = $this->file->zip($file,$file.'.zip',true);
+        $result = File::zip($file,$file.'.zip',true);
 
         $this->assertTrue( $result );
         if($result)
         {
-           $this->file->delete($file.'.zip');
+           File::delete($file.'.zip');
         }
     }
 
@@ -338,22 +339,22 @@ class FileTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\ZipException');
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
-        $this->file->zip($file,$file.'.zip',true);
+        File::zip($file,$file.'.zip',true);
     }
 
     public function testUnzipExistingFile()
     {
         file_put_contents('test2.txt','');
         $file = 'test2.txt';
-        $result1 = $this->file->zip($file,'test2.zip',true);
+        $result1 = File::zip($file,'test2.zip',true);
 
-        $result2 =$this->file->unzip($file,'.',true);
+        $result2 =File::unzip($file,'.',true);
         $this->assertTrue( $result2 );
 
         if( $result1 )
         {
-            $this->file->delete('test2.txt');
-            $this->file->delete('test2.zip');
+            File::delete('test2.txt');
+            File::delete('test2.zip');
         }
     }
 
@@ -361,13 +362,13 @@ class FileTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\ZipException');
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename.'.zip';
-        $this->file->unzip($file,'.',true);
+        File::unzip($file,'.',true);
     }
 
 
     public function testIsLinkExistingFile()
     {
-        $this->assertFalse($this->file->isLink($this->filename));
+        $this->assertFalse(File::isLink($this->filename));
     }
 
     public function testIsLinkNonExistentFile()
@@ -375,7 +376,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
 
         $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
-        $this->file->isLink($file);
+        File::isLink($file);
     }
 
     public function testSoftLinkNonExistentFile()
@@ -383,38 +384,38 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
 
         $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
-        $this->file->softSymLink($file,'alias');
+        File::softSymLink($file,'alias');
     }
 
     public function testSoftLinkExistentFile()
     {
         $file = $this->filename;
 
-        $result = $this->file->softSymLink($file,'alias');
+        $result = File::softSymLink($file,'alias');
 
         $this->assertTrue($result);
-        $this->assertTrue($this->file->isLink('alias'));
+        $this->assertTrue(File::isLink('alias'));
 
         if($result)
         {
-            $this->file->delete('alias');
+            File::delete('alias');
         }
     }
 
     public function testHardLinkExistentFile()
     {
-        $this->file->write('realFile.txt','testing...');
+        File::write('realFile.txt','testing...');
         $file = 'realFile.txt';
 
-        $result = $this->file->hardSymLink($file,'aliasHard');
+        $result = File::hardSymLink($file,'aliasHard');
 
         $this->assertTrue($result);
-        $this->assertTrue($this->file->isLink('aliasHard'));
+        $this->assertTrue(File::isLink('aliasHard'));
 
         if($result)
         {
-            $this->file->delete('aliasHard');
-            $this->file->delete('realFile.txt');
+            File::delete('aliasHard');
+            File::delete('realFile.txt');
         }
     }
 
@@ -423,14 +424,14 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
 
         $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
-        $this->file->hardSymLink($file,'alias');
+        File::hardSymLink($file,'alias');
     }
 
     public function testGetFileGroupOwner()
     {
         $file = $this->filename;
 
-        $owner = $this->file->groupOwner($file);
+        $owner = File::groupOwner($file);
         $this->assertNotEquals(false,$owner);
         $this->assertNotEmpty($owner);
 
@@ -439,7 +440,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
     public function testGetFileUserOwner()
     {
         $file = $this->filename;
-        $owner = $this->file->userOwner($file);
+        $owner = File::userOwner($file);
 
         $this->assertNotEquals(false,$owner);
         $this->assertNotEmpty($owner);
@@ -449,7 +450,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
     {
         file_put_contents(dirname(__FILE__).'image.png',file_get_contents('https://www.google.cat/images/srpr/logo11w.png'));
       
-        $mime = $this->file->mimeType(dirname(__FILE__).'image.png');
+        $mime = File::mimeType(dirname(__FILE__).'image.png');
         $this->assertEquals('image/png',$mime);
 
         unlink(dirname(__FILE__).'image.png');
@@ -463,14 +464,14 @@ class FileTest extends \PHPUnit_Framework_TestCase
 */
     public function tearDown()
     {
-        if($this->file->exists($this->filename))
+        if(File::exists($this->filename))
         {
-            $this->file->delete($this->filename);
+            File::delete($this->filename);
         }
 
-        if($this->file->exists('test.zip'))
+        if(File::exists('test.zip'))
         {
-            $this->file->delete('test.zip');
+            File::delete('test.zip');
         }
 
         $this->file = NULL;
