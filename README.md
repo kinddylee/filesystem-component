@@ -82,10 +82,8 @@ While the current class is stable and usable, new features will be added eventua
 
 - Add functions to retrieve data from files:
     - Get file size in a human friendly way.
-    - Get file mime type.
     - Check if file is hidden.
-    - Get file owner.
-    - Get file group owner.
+    - http://www.php.net/manual/en/function.stat.php
 
 - Add functions to retrieve data from directories:
     - Total number of files in the directory.
@@ -95,3 +93,6 @@ While the current class is stable and usable, new features will be added eventua
     - List all directory files sorted by file size.
     - Last modified file  in the directory.
     - List all directory files sorted by modification date.
+    
+- Make all methods static.
+

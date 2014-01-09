@@ -379,4 +379,57 @@ class File extends FileSystem implements \NilPortugues\Component\FileSystem\Inte
         fclose($out_file);
         return true;
     }
+
+
+    public function groupOwner($filePath)
+    {
+        if (!$this->exists($filePath)) {
+            throw new FileSystemException("File {$filePath} does not exist.");
+        }
+
+        $id = filegroup($filePath);
+
+        if( empty($id) )
+        {
+            throw new FileSystemException("File {$filePath} has no owner.");
+        }
+        else
+        {
+             return posix_getgrgid($id);
+        }
+       
+    }
+
+    public function userOwner($filePath)
+    {
+        if (!$this->exists($filePath)) {
+            throw new FileSystemException("File {$filePath} does not exist.");
+        }
+
+        $id = fileowner($filePath);
+
+        if( empty($id) )
+        {
+            throw new FileSystemException("File {$filePath} has no owner.");
+        }
+        else
+        {
+             return posix_getpwuid($id);
+        }
+       
+    }
+
+
+    public function mimeType($filePath)
+    {
+        if (!$this->exists($filePath)) {
+            throw new FileSystemException("File {$filePath} does not exist.");
+        }
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mime = finfo_file($finfo, $filePath);
+        finfo_close($finfo);
+
+        return $mime;
+    }
+
 }

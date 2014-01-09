@@ -426,7 +426,41 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $this->file->hardSymLink($file,'alias');
     }
 
+    public function testGetFileGroupOwner()
+    {
+        $file = $this->filename;
 
+        $owner = $this->file->groupOwner($file);
+        $this->assertNotEquals(false,$owner);
+        $this->assertNotEmpty($owner);
+
+    }
+
+    public function testGetFileUserOwner()
+    {
+        $file = $this->filename;
+        $owner = $this->file->userOwner($file);
+
+        $this->assertNotEquals(false,$owner);
+        $this->assertNotEmpty($owner);
+    }
+
+    public function testGetFileMimeType()
+    {
+        file_put_contents(dirname(__FILE__).'image.png',file_get_contents('https://www.google.cat/images/srpr/logo11w.png'));
+      
+        $mime = $this->file->mimeType(dirname(__FILE__).'image.png');
+        $this->assertEquals('image/png',$mime);
+
+        unlink(dirname(__FILE__).'image.png');
+    }
+
+/*
+    public function testGetIfFileIsHidden()
+    {
+
+    }
+*/
     public function tearDown()
     {
         if($this->file->exists($this->filename))
