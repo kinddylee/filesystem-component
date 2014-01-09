@@ -87,7 +87,7 @@ class Folder extends FileSystem implements \NilPortugues\Component\FileSystem\In
             }
             else if(!$f->isDot() && $f->isDir())
             {
-                self::recursiveCopy($f->getRealPath(), $destinationPath.DIRECTORY_SEPARATOR.$f);
+                $this->recursiveCopy($f->getRealPath(), $destinationPath.DIRECTORY_SEPARATOR.$f);
             }
         }
         return true;
