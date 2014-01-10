@@ -462,7 +462,7 @@ class File extends FileSystem implements \NilPortugues\Component\FileSystem\Inte
      * @param  int         $precision
      * @return int|string
      */
-    protected function getSize($size,$precision = 2)
+    protected static function getSize($size,$precision = 2)
     {
         $units = array('B', 'KB', 'MB', 'GB', 'TB');
         $bytes = max($size, 0);
