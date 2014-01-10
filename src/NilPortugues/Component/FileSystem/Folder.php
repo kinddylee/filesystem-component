@@ -363,7 +363,7 @@ class Folder extends FileSystem implements \NilPortugues\Component\FileSystem\In
         return mkdir($path,0755,true);
     }
 
-    public function isHidden($filePath)
+    public static function isHidden($filePath)
     {
         if (!self::exists($filePath)) {
             throw new FileSystemException("Folder {$filePath} does not exist.");
