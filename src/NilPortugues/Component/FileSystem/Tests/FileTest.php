@@ -24,8 +24,6 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $this->fileData = rand(1,500);
         file_put_contents($this->filename,rand(1,$this->fileData));
         $this->filename = realpath($this->filename);
-
-        $this->file = new File();
     }
 
     public function testMoveExistingFile()
@@ -448,20 +446,38 @@ class FileTest extends \PHPUnit_Framework_TestCase
 
     public function testGetFileMimeType()
     {
-        file_put_contents(dirname(__FILE__).'image.png',file_get_contents('https://www.google.cat/images/srpr/logo11w.png'));
+        file_put_contents(dirname(__FILE__).'/image.png',file_get_contents('https://www.google.cat/images/srpr/logo11w.png'));
       
-        $mime = File::mimeType(dirname(__FILE__).'image.png');
+        $mime = File::mimeType(dirname(__FILE__).'/image.png');
         $this->assertEquals('image/png',$mime);
 
-        unlink(dirname(__FILE__).'image.png');
+        unlink(dirname(__FILE__).'/image.png');
     }
 
-/*
-    public function testGetIfFileIsHidden()
+  
+
+    public function testisHiddenFileTrue()
     {
+        $filename = dirname(__FILE__).'/.hidden_file';
+        file_put_contents($filename,'');
+      
+        $result = File::isHidden($filename);
+        $this->assertTrue($result);
 
-    }
-*/
+        unlink($filename);
+    }        
+
+    public function testisHiddenFileFalse()
+    {
+        $filename = dirname(__FILE__).'/nothidden';
+        file_put_contents($filename,'');
+      
+        $result = File::isHidden($filename);
+        $this->assertFalse($result);
+
+        unlink($filename);
+    }  
+
     public function tearDown()
     {
         if(File::exists($this->filename))

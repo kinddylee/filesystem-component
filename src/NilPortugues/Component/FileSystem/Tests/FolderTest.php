@@ -7,6 +7,7 @@
  */
 
 namespace NilPortugues\Component\FileSystem\Test;
+use \NilPortugues\Component\FileSystem\Folder as Folder;
 
 class FolderTest extends \PHPUnit_Framework_TestCase
 {
@@ -18,8 +19,6 @@ class FolderTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->folder = new \NilPortugues\Component\FileSystem\Folder();
-
         if(!file_exists('test'))
         {
             mkdir('test',0777);
@@ -29,12 +28,12 @@ class FolderTest extends \PHPUnit_Framework_TestCase
 
     public function testDeleteExistingDirectory()
     {
-        $result = $this->folder->create($this->foldername.DIRECTORY_SEPARATOR.'hello');
+        $result = Folder::create($this->foldername.DIRECTORY_SEPARATOR.'hello');
         $this->assertTrue($result);
 
         file_put_contents($this->foldername.DIRECTORY_SEPARATOR.'hello'.DIRECTORY_SEPARATOR.'test.txt',rand(100,500));
 
-        $result = $this->folder->delete($this->foldername);
+        $result = Folder::delete($this->foldername);
 
         $this->assertFalse(file_exists($this->foldername.DIRECTORY_SEPARATOR.'hello'.DIRECTORY_SEPARATOR.'test.txt'));
         $this->assertFalse(file_exists($this->foldername.DIRECTORY_SEPARATOR.'hello'));
@@ -48,20 +47,20 @@ class FolderTest extends \PHPUnit_Framework_TestCase
         $origin = '/THIS/DIRECTORY/DOES/NOT/EXIST/';
         $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
 
-        $this->folder->delete($origin);
+        Folder::delete($origin);
     }
 
     public function testCopyExistingOriginDirectory()
     {
         mkdir('copy-test');
-        $result = $this->folder->copy('src','copy-test');
+        $result = Folder::copy('src','copy-test');
         $result2 = scandir('src');
         $result3 = scandir('copy-test');
 
         $this->assertTrue($result);
         $this->assertEquals($result2,$result3);
 
-        $this->folder->delete('copy-test');
+        Folder::delete('copy-test');
     }
 
     public function testCopyNonExistentOriginDirectory()
@@ -70,7 +69,7 @@ class FolderTest extends \PHPUnit_Framework_TestCase
         $destination = '../';
 
         $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
-        $this->folder->copy($origin,$destination);
+        Folder::copy($origin,$destination);
     }
 
     public function testCopyExistingDirectoryToTheSameExistingDirectory()
@@ -79,7 +78,7 @@ class FolderTest extends \PHPUnit_Framework_TestCase
         $destination = '.';
 
         $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
-        $this->folder->copy($origin,$destination);
+        Folder::copy($origin,$destination);
     }
 
     public function testCopyNonExistentDestinationDirectory()
@@ -88,12 +87,12 @@ class FolderTest extends \PHPUnit_Framework_TestCase
         $destination = '/THIS/DIRECTORY/DOES/NOT/EXIST/';
 
         $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
-        $this->folder->copy($origin,$destination);
+        Folder::copy($origin,$destination);
     }
 
     public function testMoveExistingOriginDirectory()
     {
-        $result = $this->folder->create($this->foldername.DIRECTORY_SEPARATOR.'hello');
+        $result = Folder::create($this->foldername.DIRECTORY_SEPARATOR.'hello');
         $this->assertTrue($result);
 
         file_put_contents($this->foldername.DIRECTORY_SEPARATOR.'hello'.DIRECTORY_SEPARATOR.'test.txt',rand(100,500));
@@ -101,12 +100,12 @@ class FolderTest extends \PHPUnit_Framework_TestCase
         $origin = $this->foldername;
         $destination = '../';
 
-        $result = $this->folder->move($origin,$destination);
+        $result = Folder::move($origin,$destination);
         $this->assertTrue($result);
 
         if($result)
         {
-            $this->folder->delete('../hello');
+            Folder::delete('../hello');
         }
     }
 
@@ -116,7 +115,7 @@ class FolderTest extends \PHPUnit_Framework_TestCase
         $destination = '../';
 
         $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
-        $this->folder->move($origin,$destination);
+        Folder::move($origin,$destination);
     }
 
     public function testMoveExistingDirectoryToTheSameExistingDirectory()
@@ -125,7 +124,7 @@ class FolderTest extends \PHPUnit_Framework_TestCase
         $destination = '.';
 
         $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
-        $this->folder->move($origin,$destination);
+        Folder::move($origin,$destination);
     }
 
     public function testMoveNonExistentDestinationDirectory()
@@ -134,51 +133,51 @@ class FolderTest extends \PHPUnit_Framework_TestCase
         $destination = '/THIS/DIRECTORY/DOES/NOT/EXIST/';
 
         $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
-        $this->folder->move($origin,$destination);
+        Folder::move($origin,$destination);
     }
 
     public function testFolderExistsExistingDirectory()
     {
         $folder = $this->foldername;
-        $this->assertTrue($this->folder->exists($folder));
+        $this->assertTrue(Folder::exists($folder));
     }
 
     public function testFolderExistsNonExistentDirectory()
     {
         $folder = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->foldername;
-        $this->assertFalse($this->folder->exists($folder));
+        $this->assertFalse(Folder::exists($folder));
     }
 
     public function testFolderIsWritableExistingDirectory()
     {
         $folder = $this->foldername;
-        $this->assertTrue($this->folder->isWritable($folder));
+        $this->assertTrue(Folder::isWritable($folder));
     }
 
     public function testFolderIsWritableNonExistentDirectory()
     {
         $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
         $folder = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->foldername;
-        $this->folder->isWritable($folder);
+        Folder::isWritable($folder);
     }
 
     public function testFolderIsReadableExistingDirectory()
     {
         $folder = $this->foldername;
-        $this->assertTrue($this->folder->isReadable($folder));
+        $this->assertTrue(Folder::isReadable($folder));
     }
 
     public function testFolderIsReadableNonExistentDirectory()
     {
         $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
         $folder = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->foldername;
-        $this->folder->isReadable($folder);
+        Folder::isReadable($folder);
     }
 
     public function testZipExistingDirectory()
     {
         $file = './src/';
-        $result = $this->folder->zip($file,'test.zip',true);
+        $result = Folder::zip($file,'test.zip',true);
 
         $this->assertTrue( $result );
         if($result)
@@ -191,27 +190,27 @@ class FolderTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\ZipException');
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/';
-        $this->folder->zip($file,'test.zip',true);
+        Folder::zip($file,'test.zip',true);
     }
 
 
     public function testUnzipExistingDirectory()
     {
         $file = './src/';
-        $result = $this->folder->zip($file,'test.zip',true);
+        $result = Folder::zip($file,'test.zip',true);
 
         if(!file_exists('tmp')){
             mkdir('tmp',0777);
         }
 
-        $result2 =$this->folder->unzip('test.zip','./tmp',true);
+        $result2 =Folder::unzip('test.zip','./tmp',true);
         $this->assertTrue( $result2 );
 
         $this->assertTrue( $result );
         if($result)
         {
             unlink('test.zip');
-            $this->folder->delete('tmp');
+            Folder::delete('tmp');
         }
 
     }
@@ -221,8 +220,8 @@ class FolderTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\ZipException');
         $dir = '/THIS/DIRECTORY/DOES/NOT/EXIST/';
 
-        $this->folder->zip('./src/','test.zip',true);
-        $this->folder->unzip('test.zip',$dir,true);
+        Folder::zip('./src/','test.zip',true);
+        Folder::unzip('test.zip',$dir,true);
     }
 
 
@@ -231,23 +230,23 @@ class FolderTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
 
         $folder = '/THIS/DIRECTORY/DOES/NOT/EXIST/';
-        $this->folder->chmod($folder, '0755');
+        Folder::chmod($folder, '0755');
     }
 
     public function testChmodExistingDirectory()
     {
         $folder = $this->foldername;
-        $this->assertTrue($this->folder->chmod($folder, '0777'));
+        $this->assertTrue(Folder::chmod($folder, '0777'));
     }
 
     public function testChangeModificationDateExistingDirectory()
     {
         $folder = $this->foldername;
-        $original = $this->folder->getModificationDate($folder);
+        $original = Folder::getModificationDate($folder);
 
         $time = time()-3600;
-        $this->folder->touch($folder,$time);
-        $result = $this->folder->getModificationDate($folder);
+        Folder::touch($folder,$time);
+        $result = Folder::getModificationDate($folder);
 
         $this->assertEquals($original-3600,$result);
     }
@@ -256,7 +255,7 @@ class FolderTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
         $folder = '/THIS/DIRECTORY/DOES/NOT/EXIST/';
-        $this->folder->touch($folder,time());
+        Folder::touch($folder,time());
     }
 
     public function testRenameInvalidNewFilename()
@@ -264,34 +263,56 @@ class FolderTest extends \PHPUnit_Framework_TestCase
         $folder = $this->foldername;
 
         $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
-        $this->folder->rename($folder,'ok/a');
+        Folder::rename($folder,'ok/a');
     }
 
     public function testRenameNonExistentDirectory()
     {
         $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
         $folder = '/THIS/DIRECTORY/DOES/NOT/EXIST/';
-        $this->folder->rename($folder,'newName');
+        Folder::rename($folder,'newName');
     }
 
     public function testRenameExistingDirectorySameName()
     {
         $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
         $folder = $this->foldername;
-        $this->folder->rename($folder,$folder);
+        Folder::rename($folder,$folder);
     }
 
     public function testRenameValidNewName()
     {
         $folder = $this->foldername;
-        $result = $this->folder->rename($folder,'ok');
+        $result = Folder::rename($folder,'ok');
 
         $this->assertTrue($result);
         if($result)
         {
-            $this->folder->delete('ok');
+            Folder::delete('ok');
         }
     }
+
+
+    public function testisHiddenFolderTrue()
+    {
+        $folder = dirname(__FILE__).'/.hidden_folder';
+        mkdir($folder);
+
+        $result = Folder::isHidden($folder);
+        $this->assertTrue($result);
+
+         $this->foldername = $folder;
+
+    }        
+
+    public function testisHiddenFolderFalse()
+    {
+        $folder = $this->foldername;
+
+        $result = Folder::isHidden($folder);
+        $this->assertFalse($result);
+    } 
+
 
     public function tearDown()
     {

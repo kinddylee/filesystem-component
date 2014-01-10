@@ -3,7 +3,7 @@
 ## 1. Description
 The FileSystem component allows file and directory manipulation under the File System.
 
-Compression is available for both files and folder using Zip and GZip for files.
+Compression and decompression is available for both files (Gzip and Zip) and folder (Zip).
 
 ## 2. Methods:
 All actions available in this component have been split into the 2 possible entities, `File` and `Folder`.
@@ -13,6 +13,8 @@ All actions available in this component have been split into the 2 possible enti
 #### Methods available:
 - File::isReadable($filePath);
 - File::isWritable($filePath);
+- File::isHidden($path);
+- File::isLink($path);
 - File::getExtension($filePath);
 - File::getModificationDate($filePath);
 - File::exists($filePath);
@@ -31,10 +33,10 @@ All actions available in this component have been split into the 2 possible enti
 - File::unzip($filePath, $destinationPath, $overwrite=false)
 - File::softSymLink($original, $alias);
 - File::hardSymLink($original, $alias);
-- File::isLink($path);
 - File::mimeType($path);
 - File::userOwner($path);
 - File::groupOwner($path);
+
 
 #### Usage:
 ```
@@ -51,6 +53,8 @@ File::exists('goodbye/moon.txt');
 #### Methods available:
 - Folder::isReadable($path);
 - Folder::isWritable($path);
+- Folder::isLink($path);
+- Folder::isHidden($path);
 - Folder::getModificationDate($path);
 - Folder::copy($filePath,$newFilePath,$overwrite=false);
 - Folder::move($filePath,$newFilePath);
@@ -64,10 +68,9 @@ File::exists('goodbye/moon.txt');
 - Folder::unzip($filePath, $newFileName, $overwrite=false);
 - Folder::softSymLink($original, $alias);
 - Folder::hardSymLink($original, $alias);
-- Folder::isLink($path);
 - Folder::softSymLink($original, $alias);
 - Folder::hardSymLink($original, $alias);
-- Folder::isLink($path);
+
 
 #### Usage:
 ```
@@ -79,7 +82,7 @@ Folder::isLink('source');
 
 
 ## 3. Fully tested.
-Testing has been done using PHPUnit and Travis-CI. All code has been tested to be compatible from PHP 5.3 up to PHP 5.5.
+Testing has been done using PHPUnit and [Travis-CI](https://travis-ci.org). All code has been tested to be compatible from PHP 5.3 up to PHP 5.5 and [Facebook's PHP Virtual Machine: HipHop](http://hiphop-php.com).
 
 
 ## 4.To do:
@@ -87,7 +90,6 @@ While the current class is stable and usable, new features will be added eventua
 
 - Add functions to retrieve data from files:
     - Get file size in a human friendly way.
-    - Check if file is hidden.
     - http://www.php.net/manual/en/function.stat.php
 
 - Add functions to retrieve data from directories:
@@ -95,6 +97,14 @@ While the current class is stable and usable, new features will be added eventua
     - Total number of files with of a certain type or extension.
     - Total directory file size.
     - Largest file in the directory.
+    - Last modified file in the directory.   
     - List all directory files sorted by file size.
-    - Last modified file  in the directory.
     - List all directory files sorted by modification date.    
+
+- Add new functionalities to existing functions
+
+    - Folder::copy($path,$destinationPath,$overwrite=false); 
+        Adding an overwrite flag means, first, read all files in path, read all files in destination file. If there are coincidences, and overwrite == false, throw exception.
+
+    -  Folder::move($path,$destinationPath,$overwrite=false); 
+        Adding an overwrite flag means, first, read all files in path, read all files in destination file. If there are coincidences, and overwrite == false, throw exception.

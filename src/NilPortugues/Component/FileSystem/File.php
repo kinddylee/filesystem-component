@@ -432,4 +432,14 @@ class File extends FileSystem implements \NilPortugues\Component\FileSystem\Inte
         return $mime;
     }
 
+    public function isHidden($filePath)
+    {
+        if (!self::exists($filePath)) {
+            throw new FileSystemException("File {$filePath} does not exist.");
+        }
+
+        $filePath = basename($filePath);
+        return ( $filePath[0] == '.' );
+    }
+
 }

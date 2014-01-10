@@ -297,7 +297,7 @@ class Folder extends FileSystem implements \NilPortugues\Component\FileSystem\In
     public static function chmod($path, $mode)
     {
         if (!self::exists($path)) {
-            throw new FileSystemException("File {$path} does not exist.");
+            throw new FileSystemException("Folder {$path} does not exist.");
         }
 
         return chmod($path, $mode);
@@ -310,7 +310,7 @@ class Folder extends FileSystem implements \NilPortugues\Component\FileSystem\In
     public static function isReadable($path)
     {
         if (!self::exists($path)) {
-            throw new FileSystemException("File {$path} does not exists.");
+            throw new FileSystemException("Folder {$path} does not exists.");
         }
 
         return is_readable($path);
@@ -324,7 +324,7 @@ class Folder extends FileSystem implements \NilPortugues\Component\FileSystem\In
     public static function isWritable($path)
     {
         if (!self::exists($path)) {
-            throw new FileSystemException("File {$path} does not exists.");
+            throw new FileSystemException("Folder {$path} does not exists.");
         }
 
         return is_writable($path);
@@ -362,4 +362,14 @@ class Folder extends FileSystem implements \NilPortugues\Component\FileSystem\In
 
         return mkdir($path,0755,true);
     }
+
+    public function isHidden($filePath)
+    {
+        if (!self::exists($filePath)) {
+            throw new FileSystemException("Folder {$filePath} does not exist.");
+        }
+
+        $filePath = basename($filePath);
+        return ( $filePath[0] == '.' );
+    }    
 }
