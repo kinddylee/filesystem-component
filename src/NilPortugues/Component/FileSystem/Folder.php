@@ -62,7 +62,7 @@ class Folder extends FileSystem implements \NilPortugues\Component\FileSystem\In
      * @param $destinationPath
      * @return bool
      */
-    protected function recursiveCopy($path,$destinationPath)
+    protected static function recursiveCopy($path,$destinationPath)
     {
         // If source is not a directory stop processing
         if(!is_dir($path)) return false;
@@ -87,7 +87,7 @@ class Folder extends FileSystem implements \NilPortugues\Component\FileSystem\In
             }
             else if(!$f->isDot() && $f->isDir())
             {
-                $this->recursiveCopy($f->getRealPath(), $destinationPath.DIRECTORY_SEPARATOR.$f);
+                self::recursiveCopy($f->getRealPath(), $destinationPath.DIRECTORY_SEPARATOR.$f);
             }
         }
         return true;
@@ -128,7 +128,7 @@ class Folder extends FileSystem implements \NilPortugues\Component\FileSystem\In
      * @param string $destinationPath
      * @return bool
      */
-    protected function recursiveMove($path, $destinationPath)
+    protected static function recursiveMove($path, $destinationPath)
     {
         // If source is not a directory stop processing
         if(!is_dir($path))
@@ -185,7 +185,7 @@ class Folder extends FileSystem implements \NilPortugues\Component\FileSystem\In
      */
     public static function delete($path)
     {
-        if(file_exists($path) && is_dir($path) )
+        if( self::exists($path) )
         {
             return self::recursivelyDelete($path);
         }
@@ -199,7 +199,7 @@ class Folder extends FileSystem implements \NilPortugues\Component\FileSystem\In
      * @param string $path
      * @return bool
      */
-    protected function recursivelyDelete($path)
+    protected static function recursivelyDelete($path)
     {
         if (!file_exists($path))
         {
