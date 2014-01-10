@@ -17,6 +17,7 @@ All actions available in this component have been split into the 2 possible enti
 - File::isLink($path);
 - File::getExtension($filePath);
 - File::getModificationDate($filePath);
+- File::size($filePath);
 - File::exists($filePath);
 - File::read($filePath);
 - File::write($filePath, $data, $mode = null);

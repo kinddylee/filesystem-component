@@ -442,4 +442,35 @@ class File extends FileSystem implements \NilPortugues\Component\FileSystem\Inte
         return ( $filePath[0] == '.' );
     }
 
+    public static function size($filePath, $format = false, $precision = 2)
+    {
+        if (!self::exists($filePath)) {
+            throw new FileSystemException("File {$filePath} does not exist.");
+        }
+
+        $size = filesize($filePath);
+
+        if($format == true)
+        {
+            return self::getSize($size,$precision);
+        }
+        return $size;
+    }
+
+    /**
+     * @param  int         $size
+     * @param  int         $precision
+     * @return int|string
+     */
+    protected function getSize($size,$precision = 2)
+    {
+        $units = array('B', 'KB', 'MB', 'GB', 'TB');
+        $bytes = max($size, 0);
+        $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
+        $pow = min($pow, count($units) - 1);
+
+        return round($bytes, $precision) . ' ' . $units[$pow];
+        
+    }    
+
 }

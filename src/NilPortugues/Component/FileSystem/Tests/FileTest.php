@@ -478,6 +478,29 @@ class FileTest extends \PHPUnit_Framework_TestCase
         unlink($filename);
     }  
 
+    public function testgetFileSize()
+    {
+        $filename = dirname(__FILE__).'/.hidden_file';
+        file_put_contents($filename,'');
+      
+        $result = File::size($filename);
+        $this->assertEquals('0',$result);
+
+        unlink($filename);      
+    }
+
+    public function testgetHumanReadableFileSize()
+    {
+        $filename = dirname(__FILE__).'/.hidden_file';
+        file_put_contents($filename,'');
+      
+        $result = File::size($filename,true,2);
+        $this->assertEquals('0 B',$result);
+
+        unlink($filename);       
+    }
+
+
     public function tearDown()
     {
         if(File::exists($this->filename))
