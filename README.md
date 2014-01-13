@@ -42,7 +42,7 @@ All actions available in this component have been split into the 2 possible enti
 #### Usage:
 ```
 <?php
-use \NilPortugues\Component\FileSystem\File as File;
+use \Sonrisa\Component\FileSystem\File as File;
 
 File::copy('hello/world.txt','goodbye/moon.txt');
 File::exists('goodbye/moon.txt');
@@ -75,7 +75,7 @@ File::exists('goodbye/moon.txt');
 
 #### Usage:
 ```
-use \NilPortugues\Component\FileSystem\Folder as Folder;
+use \Sonrisa\Component\FileSystem\Folder as Folder;
 
 Folder::softSymLink('path/to/src','source');
 Folder::isLink('source');
@@ -90,7 +90,6 @@ Testing has been done using PHPUnit and [Travis-CI](https://travis-ci.org). All 
 While the current class is stable and usable, new features will be added eventually for even better file system support.
 
 - Add functions to retrieve data from files:
-    - Get file size in a human friendly way.
     - http://www.php.net/manual/en/function.stat.php
 
 - Add functions to retrieve data from directories:

@@ -6,7 +6,7 @@
  * file that was distributed with this source code.
  */
 
-namespace NilPortugues\Component\FileSystem\Interfaces;
+namespace Sonrisa\Component\FileSystem\Interfaces;
 
 interface FolderInterface
 {

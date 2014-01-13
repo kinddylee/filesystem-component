@@ -9,7 +9,7 @@
         {
             "name":"Nil Portugués Calderó",
             "email":"contact@nilportugues.com",
-            "homepage":"http://nilportugues.com",
+            "homepage":"http://Sonrisa.com",
             "role":"Lead Developer"
         }
     ],
@@ -24,7 +24,7 @@
     },
     "autoload":{
         "psr-0":{
-            "NilPortugues\\Component\\FileSystem":"src/"
+            "Sonrisa\\Component\\FileSystem":"src/"
         }
     },
     "minimum-stability": "dev"

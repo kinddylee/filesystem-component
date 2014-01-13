@@ -6,11 +6,11 @@
  * file that was distributed with this source code.
  */
 
-namespace NilPortugues\Component\FileSystem;
+namespace Sonrisa\Component\FileSystem;
 
-use \NilPortugues\Component\FileSystem\Exceptions\FileSystemException;
+use \Sonrisa\Component\FileSystem\Exceptions\FileSystemException;
 
-class Folder extends FileSystem implements \NilPortugues\Component\FileSystem\Interfaces\FolderInterface
+class Folder extends FileSystem implements \Sonrisa\Component\FileSystem\Interfaces\FolderInterface
 {
     /**
      * Gets last modification time of a folder.
@@ -352,12 +352,12 @@ class Folder extends FileSystem implements \NilPortugues\Component\FileSystem\In
     {
         if(file_exists($path) && is_file($path))
         {
-            throw new \NilPortugues\Component\FileSystem\Exceptions\FileSystemException("Cannot create the {$path} folder because a file with the same name exists.");
+            throw new \Sonrisa\Component\FileSystem\Exceptions\FileSystemException("Cannot create the {$path} folder because a file with the same name exists.");
         }
 
         if(self::exists($path))
         {
-            throw new \NilPortugues\Component\FileSystem\Exceptions\FileSystemException("Cannot create the {$path} folder because it already exists.");
+            throw new \Sonrisa\Component\FileSystem\Exceptions\FileSystemException("Cannot create the {$path} folder because it already exists.");
         }
 
         return mkdir($path,0755,true);

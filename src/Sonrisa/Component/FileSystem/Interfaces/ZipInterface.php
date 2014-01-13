@@ -1,5 +1,5 @@
 <?php
-namespace NilPortugues\Component\FileSystem\Interfaces;
+namespace Sonrisa\Component\FileSystem\Interfaces;
 
 interface ZipInterface
 {

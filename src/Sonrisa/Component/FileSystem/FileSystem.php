@@ -6,10 +6,10 @@
  * file that was distributed with this source code.
  */
 
-namespace NilPortugues\Component\FileSystem;
+namespace Sonrisa\Component\FileSystem;
 
-use \NilPortugues\Component\FileSystem\Exceptions\FileSystemException as FileSystemException;
-use NilPortugues\Component\FileSystem\Interfaces\FileSystemInterface as FileSystemInterface;
+use \Sonrisa\Component\FileSystem\Exceptions\FileSystemException as FileSystemException;
+use Sonrisa\Component\FileSystem\Interfaces\FileSystemInterface as FileSystemInterface;
 
 abstract class FileSystem extends Zip implements FileSystemInterface
 {
@@ -23,12 +23,12 @@ abstract class FileSystem extends Zip implements FileSystemInterface
     {
         if(!file_exists($original))
         {
-            throw new \NilPortugues\Component\FileSystem\Exceptions\FileSystemException("Cannot link {$original} because it does not exist.");
+            throw new \Sonrisa\Component\FileSystem\Exceptions\FileSystemException("Cannot link {$original} because it does not exist.");
         }
 
         if(file_exists($alias))
         {
-            throw new \NilPortugues\Component\FileSystem\Exceptions\FileSystemException("Cannot create link {$alias} because a file, directory or link with this name already exists.");
+            throw new \Sonrisa\Component\FileSystem\Exceptions\FileSystemException("Cannot create link {$alias} because a file, directory or link with this name already exists.");
         }
 
         return symlink($original,$alias);
@@ -44,12 +44,12 @@ abstract class FileSystem extends Zip implements FileSystemInterface
     {
         if(!file_exists($original))
         {
-            throw new \NilPortugues\Component\FileSystem\Exceptions\FileSystemException("Cannot link {$original} because it does not exist.");
+            throw new \Sonrisa\Component\FileSystem\Exceptions\FileSystemException("Cannot link {$original} because it does not exist.");
         }
 
         if(file_exists($alias))
         {
-            throw new \NilPortugues\Component\FileSystem\Exceptions\FileSystemException("Cannot create link {$alias} because a file, directory or link with this name already exists.");
+            throw new \Sonrisa\Component\FileSystem\Exceptions\FileSystemException("Cannot create link {$alias} because a file, directory or link with this name already exists.");
         }
 
         return link($original,$alias);

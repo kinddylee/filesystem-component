@@ -6,11 +6,11 @@
  * file that was distributed with this source code.
  */
 
-namespace NilPortugues\Component\FileSystem;
+namespace Sonrisa\Component\FileSystem;
 
-use NilPortugues\Component\FileSystem\Exceptions\FileSystemException;
+use Sonrisa\Component\FileSystem\Exceptions\FileSystemException;
 
-class File extends FileSystem implements \NilPortugues\Component\FileSystem\Interfaces\FileInterface
+class File extends FileSystem implements \Sonrisa\Component\FileSystem\Interfaces\FileInterface
 {
 
     /**

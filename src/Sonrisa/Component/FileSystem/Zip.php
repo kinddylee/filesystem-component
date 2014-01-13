@@ -6,8 +6,8 @@
  * file that was distributed with this source code.
  */
 
-namespace NilPortugues\Component\FileSystem;
-use \NilPortugues\Component\FileSystem\Folder as Folder;
+namespace Sonrisa\Component\FileSystem;
+use \Sonrisa\Component\FileSystem\Folder as Folder;
 
 abstract class Zip
 {
@@ -24,12 +24,12 @@ abstract class Zip
 
         if(!file_exists($filePath))
         {
-            throw new \NilPortugues\Component\FileSystem\Exceptions\ZipException("File {$filePath} does not exist therefore it cannot be zipped.");
+            throw new \Sonrisa\Component\FileSystem\Exceptions\ZipException("File {$filePath} does not exist therefore it cannot be zipped.");
         }
 
         if(file_exists($newFileName) && $overwrite == false)
         {
-            throw new \NilPortugues\Component\FileSystem\Exceptions\ZipException("Cannot create {$newFileName} zip file because it already exists a file with the same name.");
+            throw new \Sonrisa\Component\FileSystem\Exceptions\ZipException("Cannot create {$newFileName} zip file because it already exists a file with the same name.");
         }
 
         $zip = new \ZipArchive();
@@ -125,18 +125,18 @@ abstract class Zip
 
         if(!file_exists($filePath) || !is_file($filePath))
         {
-            throw new \NilPortugues\Component\FileSystem\Exceptions\ZipException("File {$filePath} does not exist therefore it cannot be unzipped.");
+            throw new \Sonrisa\Component\FileSystem\Exceptions\ZipException("File {$filePath} does not exist therefore it cannot be unzipped.");
         }
 
         if(!file_exists($destinationPath) || !is_dir($destinationPath))
         {
-            throw new \NilPortugues\Component\FileSystem\Exceptions\ZipException("Destination folder {$destinationPath} does not exist.");
+            throw new \Sonrisa\Component\FileSystem\Exceptions\ZipException("Destination folder {$destinationPath} does not exist.");
         }
 
         $unzipPath = $filePath;
         if(file_exists($unzipPath) && $overwrite==false)
         {
-            throw new \NilPortugues\Component\FileSystem\Exceptions\ZipException("Cannot unzip {$unzipPath} because it already exists a file or folder with the same name.");
+            throw new \Sonrisa\Component\FileSystem\Exceptions\ZipException("Cannot unzip {$unzipPath} because it already exists a file or folder with the same name.");
         }
 
 
@@ -153,9 +153,9 @@ abstract class Zip
                 {
                     Folder::create($destinationPath);
                 }
-                catch(\NilPortugues\Component\FileSystem\Exceptions\FolderException $e)
+                catch(\Sonrisa\Component\FileSystem\Exceptions\FolderException $e)
                 {
-                    throw new \NilPortugues\Component\FileSystem\Exceptions\ZipException($e->getMessage());
+                    throw new \Sonrisa\Component\FileSystem\Exceptions\ZipException($e->getMessage());
                 }
             }
 
@@ -180,7 +180,7 @@ abstract class Zip
                             $result = mkdir($_tmp["filename"],0777,true);
                             if($result == false)
                             {
-                                throw new \NilPortugues\Component\FileSystem\Exceptions\ZipException("Could not create directory {$_tmp["filename"]}.");
+                                throw new \Sonrisa\Component\FileSystem\Exceptions\ZipException("Could not create directory {$_tmp["filename"]}.");
                             }
                         }
                     }
@@ -196,7 +196,7 @@ abstract class Zip
                 }
                 else
                 {
-                    throw new \NilPortugues\Component\FileSystem\Exceptions\ZipException("An error occurred while extracting {$_tmp["stored_filename"]}.");
+                    throw new \Sonrisa\Component\FileSystem\Exceptions\ZipException("An error occurred while extracting {$_tmp["stored_filename"]}.");
                 }
 
             }

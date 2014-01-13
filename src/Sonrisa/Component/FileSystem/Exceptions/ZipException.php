@@ -6,9 +6,9 @@
  * file that was distributed with this source code.
  */
 
-namespace NilPortugues\Component\FileSystem\Exceptions;
+namespace Sonrisa\Component\FileSystem\Exceptions;
 
-class FileSystemException extends \Exception
+class ZipException extends \Exception
 {
 
 }

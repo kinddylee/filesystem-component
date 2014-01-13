@@ -6,13 +6,13 @@
  * file that was distributed with this source code.
  */
 
-namespace NilPortugues\Component\FileSystem\Test;
-use \NilPortugues\Component\FileSystem\File as File;
+namespace Sonrisa\Component\FileSystem\Test;
+use \Sonrisa\Component\FileSystem\File as File;
 
 class FileTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \NilPortugues\Component\FileSystem\File
+     * @var \Sonrisa\Component\FileSystem\File
      */
     protected $file;
     protected $filename = 'test.txt';
@@ -38,7 +38,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
 
     public function testMoveNonExistentFile()
     {
-        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
+        $this->setExpectedException('Sonrisa\Component\FileSystem\Exceptions\FileSystemException');
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
         File::move($file,"../",true);
     }
@@ -60,7 +60,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
 
     public function testCopyNonExistentFile()
     {
-        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
+        $this->setExpectedException('Sonrisa\Component\FileSystem\Exceptions\FileSystemException');
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
         File::copy($file,"../");
     }
@@ -112,7 +112,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
 
     public function testChangeModificationDateNonExistentFile()
     {
-        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
+        $this->setExpectedException('Sonrisa\Component\FileSystem\Exceptions\FileSystemException');
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
         File::touch($file,time());
     }
@@ -137,7 +137,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
 
     public function testFileIsReadableNonExistentFile()
     {
-        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
+        $this->setExpectedException('Sonrisa\Component\FileSystem\Exceptions\FileSystemException');
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
         File::isWritable($file);
     }
@@ -150,7 +150,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
 
     public function testFileReadNonExistentFile()
     {
-        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
+        $this->setExpectedException('Sonrisa\Component\FileSystem\Exceptions\FileSystemException');
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
         File::read($file);
     }
@@ -165,7 +165,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
 
     public function testFileWriteFileNotWritable()
     {
-        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
+        $this->setExpectedException('Sonrisa\Component\FileSystem\Exceptions\FileSystemException');
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
         $data = 'Lorem ipsum blah blah blah';
 
@@ -180,7 +180,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
 
     public function testFileAppendNonExistentFile()
     {
-        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
+        $this->setExpectedException('Sonrisa\Component\FileSystem\Exceptions\FileSystemException');
 
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
         File::append($file, 'new data');
@@ -188,7 +188,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
 
     public function testFileChmodNonExistentFile()
     {
-        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
+        $this->setExpectedException('Sonrisa\Component\FileSystem\Exceptions\FileSystemException');
 
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
         File::chmod($file, '0755');
@@ -202,7 +202,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
 
     public function testFileDeleteNonExistentFile()
     {
-        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
+        $this->setExpectedException('Sonrisa\Component\FileSystem\Exceptions\FileSystemException');
 
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
         File::delete($file);
@@ -233,13 +233,13 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $file = $this->filename;
         $overwrite=false;
 
-        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
+        $this->setExpectedException('Sonrisa\Component\FileSystem\Exceptions\FileSystemException');
         File::rename($file,'ok/a.txt',$overwrite);
     }
 
     public function testFileRenameNonExistentFile()
     {
-        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
+        $this->setExpectedException('Sonrisa\Component\FileSystem\Exceptions\FileSystemException');
 
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
         File::rename($file,'newName.txt',false);
@@ -247,7 +247,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
 
     public function testFileRenameExistingFileNoOverwrite()
     {
-        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
+        $this->setExpectedException('Sonrisa\Component\FileSystem\Exceptions\FileSystemException');
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
         File::rename($file,'newName.txt',false);
     }
@@ -292,7 +292,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
 
     public function testGZipNonExistentFile()
     {
-        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
+        $this->setExpectedException('Sonrisa\Component\FileSystem\Exceptions\FileSystemException');
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
         File::gzip($file,$file.'.gz',true);
     }
@@ -314,7 +314,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
 
     public function testGunzipNonExistentFile()
     {
-        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
+        $this->setExpectedException('Sonrisa\Component\FileSystem\Exceptions\FileSystemException');
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
 
         File::gunzip($file.'.gz',$file.'.extracted.txt',true);
@@ -335,7 +335,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
 
     public function testZipNonExistentFile()
     {
-        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\ZipException');
+        $this->setExpectedException('Sonrisa\Component\FileSystem\Exceptions\ZipException');
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
         File::zip($file,$file.'.zip',true);
     }
@@ -358,7 +358,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
 
     public function testUnzipNonExistentFile()
     {
-        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\ZipException');
+        $this->setExpectedException('Sonrisa\Component\FileSystem\Exceptions\ZipException');
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename.'.zip';
         File::unzip($file,'.',true);
     }
@@ -373,7 +373,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
     {
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
 
-        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
+        $this->setExpectedException('Sonrisa\Component\FileSystem\Exceptions\FileSystemException');
         File::isLink($file);
     }
 
@@ -381,7 +381,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
     {
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
 
-        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
+        $this->setExpectedException('Sonrisa\Component\FileSystem\Exceptions\FileSystemException');
         File::softSymLink($file,'alias');
     }
 
@@ -421,7 +421,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
     {
         $file = '/THIS/DIRECTORY/DOES/NOT/EXIST/'.$this->filename;
 
-        $this->setExpectedException('NilPortugues\Component\FileSystem\Exceptions\FileSystemException');
+        $this->setExpectedException('Sonrisa\Component\FileSystem\Exceptions\FileSystemException');
         File::hardSymLink($file,'alias');
     }
 

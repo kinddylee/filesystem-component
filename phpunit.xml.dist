@@ -14,7 +14,7 @@
         >
     <testsuites>
         <testsuite name="Test Suite">
-            <directory>./src/NilPortugues/Component/FileSystem/Tests</directory>
+            <directory>./src/Sonrisa/Component/FileSystem/Tests</directory>
         </testsuite>
     </testsuites>
 
