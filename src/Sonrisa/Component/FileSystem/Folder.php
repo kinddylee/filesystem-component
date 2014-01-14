@@ -372,4 +372,44 @@ class Folder extends FileSystem implements \Sonrisa\Component\FileSystem\Interfa
         $filePath = basename($filePath);
         return ( $filePath[0] == '.' );
     }    
+
+    //if Unix and exec is allowed: du $dirPath | tail -n 1 | awk '{print $1}'
+    public static function size($filePath, $format = false, $precision = 2)
+    {
+        if (!self::exists($filePath)) {
+            throw new FileSystemException("File {$filePath} does not exist.");
+        }
+
+        $size = self::recursiveDirSize($filePath);
+
+        if($format == true)
+        {
+            return self::getSize($size,$precision);
+        }
+        return $size;
+    }
+
+    protected static function recursiveDirSize($filePath)
+    {
+      $dh = opendir($filePath);
+      $size = 0;
+      while ($file = readdir($dh))
+      {
+        if ($file != "." and $file != "..") 
+        {
+          $path = $filePath.DIRECTORY_SEPARATOR.$file;
+          if (is_dir($path))
+          {
+            $size += self::recursiveDirSize($path);
+          }
+          elseif (is_file($path))
+          {
+            $size += filesize($path); 
+          }
+        }
+      }
+      closedir($dh);
+      return $size;
+    }
+
 }

@@ -17,7 +17,7 @@ All actions available in this component have been split into the 2 possible enti
 - File::isLink($path);
 - File::getExtension($filePath);
 - File::getModificationDate($filePath);
-- File::size($filePath);
+- File::size($filePath, $format = false, $precision = 2);
 - File::exists($filePath);
 - File::read($filePath);
 - File::write($filePath, $data, $mode = null);
@@ -57,6 +57,7 @@ File::exists('goodbye/moon.txt');
 - Folder::isLink($path);
 - Folder::isHidden($path);
 - Folder::getModificationDate($path);
+- Folder::size($filePath, $format = false, $precision = 2);
 - Folder::copy($filePath,$newFilePath,$overwrite=false);
 - Folder::move($filePath,$newFilePath);
 - Folder::exists($path);
@@ -71,7 +72,6 @@ File::exists('goodbye/moon.txt');
 - Folder::hardSymLink($original, $alias);
 - Folder::softSymLink($original, $alias);
 - Folder::hardSymLink($original, $alias);
-
 
 #### Usage:
 ```
@@ -95,7 +95,6 @@ While the current class is stable and usable, new features will be added eventua
 - Add functions to retrieve data from directories:
     - Total number of files in the directory.
     - Total number of files with of a certain type or extension.
-    - Total directory file size.
     - Largest file in the directory.
     - Last modified file in the directory.   
     - List all directory files sorted by file size.

@@ -314,6 +314,25 @@ class FolderTest extends \PHPUnit_Framework_TestCase
     } 
 
 
+    public function testgetFolderSize()
+    {
+        $filename = dirname(__FILE__);
+      
+        $result = Folder::size($filename);
+        $this->assertNotEquals('0',$result);
+    }
+
+    public function testgetHumanReadableFolderSize()
+    {
+        $newDir = dirname(__FILE__).'/new';
+        mkdir($newDir,0777);
+      
+        $result = Folder::size($newDir,true,2);
+        $this->assertEquals('0 B',$result);
+        rmdir($newDir);
+       
+    }
+
     public function tearDown()
     {
         if(file_exists($this->foldername))

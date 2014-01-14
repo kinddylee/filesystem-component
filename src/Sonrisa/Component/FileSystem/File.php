@@ -456,21 +456,4 @@ class File extends FileSystem implements \Sonrisa\Component\FileSystem\Interface
         }
         return $size;
     }
-
-    /**
-     * @param  int         $size
-     * @param  int         $precision
-     * @return int|string
-     */
-    protected static function getSize($size,$precision = 2)
-    {
-        $units = array('B', 'KB', 'MB', 'GB', 'TB');
-        $bytes = max($size, 0);
-        $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
-        $pow = min($pow, count($units) - 1);
-
-        return round($bytes, $precision) . ' ' . $units[$pow];
-        
-    }    
-
 }
