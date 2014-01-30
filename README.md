@@ -113,3 +113,8 @@ While the current class is stable and usable, new features will be added eventua
 
     -  Folder::move($path,$destinationPath,$overwrite=false); 
         Adding an overwrite flag means, first, read all files in path, read all files in destination file. If there are coincidences, and overwrite == false, throw exception.
+
+## 6. Author
+Nil Portugués Calderó
+ - <contact@nilportugues.com>
+ - http://nilportugues.com
