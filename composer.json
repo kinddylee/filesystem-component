@@ -27,5 +27,5 @@
             "Sonrisa\\Component\\FileSystem":"src/"
         }
     },
-    "minimum-stability": "dev"
+    "minimum-stability": "stable"
 }
