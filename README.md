@@ -108,6 +108,11 @@ Testing has been done using PHPUnit and [Travis-CI](https://travis-ci.org). All 
 ## 5.To do:
 While the current class is stable and usable, new features will be added eventually for even better file system support.
 
+- Make use of:
+   - http://us2.php.net/manual/en/class.splfileinfo.php
+   - http://us2.php.net/manual/en/class.splfileobject.php
+   - http://us2.php.net/manual/en/class.spltempfileobject.php
+
 - Add functions to retrieve data from files:
     - http://www.php.net/manual/en/function.stat.php
 
