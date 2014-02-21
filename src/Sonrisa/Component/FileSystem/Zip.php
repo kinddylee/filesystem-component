@@ -42,7 +42,7 @@ abstract class Zip
             $open = $zip->open($newFileName, \ZipArchive::CREATE);
         }
 
-        if( $open )
+        if( $open == true )
         {
             if(is_dir($filePath))
             {
