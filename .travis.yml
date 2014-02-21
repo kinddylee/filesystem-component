@@ -9,6 +9,8 @@ php:
 before_script:
   ## Install Composer
   - composer install
+  - pecl install zip
+  - echo "extension = zip.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
 script: 
   - phpunit
