@@ -1,4 +1,5 @@
 # [![Build Status](https://travis-ci.org/sonrisa/filesystem-component.png?branch=master)](https://travis-ci.org/sonrisa/filesystem-component) FileSystem Component
+[![Latest Stable Version](https://poser.pugx.org/sonrisa/filesystem-component/v/stable.svg)](https://packagist.org/packages/sonrisa/filesystem-component) [![Total Downloads](https://poser.pugx.org/sonrisa/filesystem-component/downloads.svg)](https://packagist.org/packages/sonrisa/filesystem-component) [![Latest Unstable Version](https://poser.pugx.org/sonrisa/filesystem-component/v/unstable.svg)](https://packagist.org/packages/sonrisa/filesystem-component) [![License](https://poser.pugx.org/sonrisa/filesystem-component/license.svg)](https://packagist.org/packages/sonrisa/filesystem-component)
 
 * [1.Installation](#block1)
 * [2. Description](#block2)
